@@ -1,6 +1,6 @@
 ﻿@model Dao.Model.User
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Логин";
 }
 
 <h2>Логин</h2>
@@ -10,6 +10,9 @@
         @Html.HiddenFor(x => x.Id)
         <div class="form-group">
             <label for="Name">Имя:</label>
+            <p>
+                @Html.ValidationMessageFor(x => x.Name)
+            </p>
             @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
         </div>
         <div class="form-group">

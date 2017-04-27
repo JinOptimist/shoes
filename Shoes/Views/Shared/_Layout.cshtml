@@ -3,14 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Туфельки</title>
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/clothes.ico" />
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="~/Scripts/jquery-3.1.1.min.js"></script>
     <script src="~/Scripts/shoes/add-shoes.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
 </head>
-<body>
+<body class="lvov">
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -23,12 +24,17 @@
 
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
+                    <li class="header-logo">
+                        <a href="@Url.Action("Index", "Home")">
+                            <img src="~/Content/logo.png"/>
+                        </a>
+                    </li>
                     <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
                         @Html.ActionLink("Главная", "Index", "Home", new { area = "" }, new { @class = "navbar-brand " })
                     </li>
                     @if (User.Identity.IsAuthenticated) {
                         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "AddShoes" ? "active" : "")">
-                            @Html.ActionLink("Добавить", "AddShoes", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                            @Html.ActionLink("Добавить туфельку", "AddShoes", "Home", new { area = "" }, new { @class = "navbar-brand" })
                         </li>
                         <li>
                             @Html.ActionLink("Выйти", "Logout", "Home", new { area = "" }, new { @class = "navbar-brand" })

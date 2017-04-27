@@ -47,9 +47,33 @@ namespace Shoes.Controllers
             if (user != null) {
                 FormsAuthentication.SetAuthCookie(user.Name, true);
                 return RedirectToAction("Index");
+            } else {
+                ModelState.AddModelError("Name", "Имя или пароль не совпадают");
             }
 
             return View(user);
+        }
+
+        [AllowAnonymous]
+        public ActionResult CreateBaseUser()
+        {
+            var mama = new User {
+                Name = "Натали",
+                Password = "экономика"
+            };
+            if (!UserRepository.ExistName(mama.Name)) {
+                UserRepository.Save(mama);
+            }
+
+            var papa = new User {
+                Name = "Сергей",
+                Password = "ми-6"
+            };
+            if (!UserRepository.ExistName(papa.Name)) {
+                UserRepository.Save(papa);
+            }
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult Remove(long id)
@@ -58,8 +82,25 @@ namespace Shoes.Controllers
             var path = Server.MapPath(shoes.ImageUrl);
             ShoesRepository.Remove(id);
             System.IO.File.Delete(path);
-            
+
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Edit(long id)
+        {
+            var shoes = ShoesRepository.Get(id);
+            return View("AddShoes", shoes);
+        }
+
+        public ActionResult StaticPages()
+        {
+
+            return View();
+        }
+
+        public ActionResult AboutCollection()
+        {
+            return View();
         }
 
         public ActionResult AddShoes()
@@ -71,14 +112,18 @@ namespace Shoes.Controllers
         [HttpPost]
         public ActionResult AddShoes(ShoesModel shoes, HttpPostedFile image)
         {
-            if (ModelState.IsValid) {
+            // field File always fail validation
+            var fieldWithError = ModelState.Count(x => x.Value.Errors.Count > 0);
+            if (fieldWithError <= 1) {
                 shoes = ShoesRepository.Save(shoes);
                 if (Request.Files.Count > 0) {
                     var file = Request.Files[0];
                     var fileName = shoes.Id + Path.GetExtension(file.FileName);
-                    file.SaveAs(GetPathToImg(fileName));
-                    shoes.ImageUrl = Url.Content("~/Content/img/" + fileName);
-                    shoes = ShoesRepository.Save(shoes);
+                    if (!string.IsNullOrEmpty(file.FileName)) {
+                        file.SaveAs(GetPathToImg(fileName));
+                        shoes.ImageUrl = Url.Content("~/Content/img/" + fileName);
+                        shoes = ShoesRepository.Save(shoes);
+                    }
                 }
             }
 

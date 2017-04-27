@@ -16,6 +16,54 @@ textarea {
     max-width: 280px;
 }
 
-.field-validation-error{
+.field-validation-error {
     color: red;
+}
+
+.lvov .navbar-inverse .navbar-nav > a,
+.lvov .navbar-inverse .navbar-nav > a:focus,
+.lvov .navbar-inverse .navbar-nav > a:hover {
+    background-color: #444;
+    color: #ccc;
+}
+
+.lvov .navbar-inverse .navbar-nav > .active > a,
+.lvov .navbar-inverse .navbar-nav > .active > a:focus,
+.lvov .navbar-inverse .navbar-nav > .active > a:hover {
+    background-color: #444;
+    color: #ccc;
+}
+
+.lvov .navbar-inverse {
+    background-color: #aaa;
+    border-color: #080808;
+}
+
+.header-logo {
+    margin-right: 15px;
+}
+
+.lvov .nav > li {
+    margin: 0 5px;
+    display: inline-block;
+}
+
+    .lvov .nav > li.header-logo {
+        vertical-align: top;
+    }
+
+.lvov .navbar-inverse .navbar-nav > li > a {
+    color: #eee;
+}
+
+.nav > li.header-logo > a {
+    padding: 0 15px 0 0;
+}
+
+    .nav > li.header-logo > a > img {
+        max-width: 50px;
+    }
+
+.lvov .navbar-inverse .navbar-nav > li > a {
+
 }

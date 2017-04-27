@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Dao.Model.Shoes>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Коллекция";
 }
 
 <div class="page-header">
@@ -8,7 +8,7 @@
 </div>
 
 @if (Model != null) {
-    foreach (var shoes in Model) {
+    foreach (var shoes in Model.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
         <div class="row">
             <img class="col-sm-6" src="@shoes.ImageUrl" />
             <div class="col-sm-6">
@@ -18,11 +18,18 @@
                 <p>
                     @shoes.Desc
                 </p>
-                <p>
-                    <a href="@Url.Action("Remove", new { id = shoes.Id})">Удалить</a>
-                </p>
+
+                @if (User.Identity.IsAuthenticated) {
+                    <p>
+                        <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
+                    </p>
+                    <p>
+                        <a href="@Url.Action("Remove", new { id = shoes.Id})">Удалить</a>
+                    </p>
+                }
             </div>
         </div>
+        <hr />
     }
 }
 
