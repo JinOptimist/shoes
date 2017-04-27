@@ -22,6 +22,7 @@ namespace Dao
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             modelBuilder.Entity<Shoes>();
+            modelBuilder.Entity<User>();
         }
 
         public static void SetInitializer()

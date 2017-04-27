@@ -1,0 +1,18 @@
+namespace Dao.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class UpdateUser : DbMigration
+    {
+        public override void Up()
+        {
+            AlterColumn("dbo.Shoes", "Name", c => c.String(nullable: false));
+        }
+        
+        public override void Down()
+        {
+            AlterColumn("dbo.Shoes", "Name", c => c.String());
+        }
+    }
+}

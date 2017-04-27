@@ -1,7 +1,28 @@
-﻿
+﻿@model IEnumerable<Dao.Model.Shoes>
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div class="page-header">
+    <h1>Полная коллекция</h1>
+</div>
+
+@if (Model != null) {
+    foreach (var shoes in Model) {
+        <div class="row">
+            <img class="col-sm-6" src="@shoes.ImageUrl" />
+            <div class="col-sm-6">
+                <p>
+                    @shoes.Name
+                </p>
+                <p>
+                    @shoes.Desc
+                </p>
+                <p>
+                    <a href="@Url.Action("Remove", new { id = shoes.Id})">Удалить</a>
+                </p>
+            </div>
+        </div>
+    }
+}
 
