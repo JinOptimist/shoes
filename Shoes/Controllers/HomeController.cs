@@ -1,6 +1,7 @@
 ﻿using Dao;
 using Dao.Model;
 using Dao.Repository;
+using Shoes.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,13 +17,21 @@ namespace Shoes.Controllers
     public class HomeController : Controller
     {
         private readonly ShoesContext _context = new ShoesContext();
-        public ShoesRepository ShoesRepository { get; set; }
-        public UserRepository UserRepository { get; set; }
+        private readonly ShoesRepository ShoesRepository;
+        private readonly MaterialRepository MaterialRepository;
+        private readonly GroupRepository GroupRepository;
+        private readonly PlaceRepository PlaceRepository;
+        private readonly PersonRepository PersonRepository;
+        private readonly UserRepository UserRepository;
 
         public HomeController()
         {
             _context = new ShoesContext();
             ShoesRepository = new ShoesRepository(_context);
+            MaterialRepository = new MaterialRepository(_context);
+            GroupRepository = new GroupRepository(_context);
+            PlaceRepository = new PlaceRepository(_context);
+            PersonRepository = new PersonRepository(_context);
             UserRepository = new UserRepository(_context);
         }
 
@@ -86,15 +95,28 @@ namespace Shoes.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult AddShoes()
+        {
+            var model = new ShoesModel();
+            var materials = MaterialRepository.GetAll();
+            var groups = GroupRepository.GetAll();
+            var places = PlaceRepository.GetAll();
+            var viewModel = new ShoesViewModel(model, materials, groups, places);
+            return View(viewModel);
+        }
+
         public ActionResult Edit(long id)
         {
             var shoes = ShoesRepository.Get(id);
-            return View("AddShoes", shoes);
+            var materials = MaterialRepository.GetAll();
+            var groups = GroupRepository.GetAll();
+            var places = PlaceRepository.GetAll();
+            var viewModel = new ShoesViewModel(shoes, materials, groups, places);
+            return View("AddShoes", viewModel);
         }
 
         public ActionResult StaticPages()
         {
-
             return View();
         }
 
@@ -103,16 +125,11 @@ namespace Shoes.Controllers
             return View();
         }
 
-        public ActionResult AddShoes()
-        {
-            var model = new ShoesModel();
-            return View(model);
-        }
-
         [HttpPost]
-        public ActionResult AddShoes(ShoesModel shoes, HttpPostedFile image)
+        public ActionResult AddShoes(ShoesViewModel shoesViewModel, HttpPostedFile image)
         {
-            // field File always fail validation
+            ShoesModel shoes = shoesViewModel as ShoesModel;
+            // field File always fail validationshoesViewModel
             var fieldWithError = ModelState.Count(x => x.Value.Errors.Count > 0);
             if (fieldWithError <= 1) {
                 shoes = ShoesRepository.Save(shoes);
@@ -133,6 +150,41 @@ namespace Shoes.Controllers
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult GenerateSeed()
+        {
+            var groups = new List<Group>();
+            groups.Add(new Group() {
+                Name = "оберег"
+            });
+            groups.Add(new Group() {
+                Name = "статуэтка"
+            });
+            groups.Add(new Group() {
+                Name = "копилка"
+            });
+            GroupRepository.Save(groups);
+
+            var materials = new List<Material>();
+            materials.Add(new Material() {
+                Name = "фарфор"
+            });
+            materials.Add(new Material() {
+                Name = "керамика"
+            });
+            materials.Add(new Material() {
+                Name = "глина"
+            });
+            materials.Add(new Material() {
+                Name = "пластик"
+            });
+            materials.Add(new Material() {
+                Name = "дерево"
+            });
+            MaterialRepository.Save(materials);
+
             return RedirectToAction("Index");
         }
 

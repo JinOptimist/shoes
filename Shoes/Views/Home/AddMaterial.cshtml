@@ -1,0 +1,10 @@
+﻿@model Dao.Model.Material
+@{
+    ViewBag.Title = "Добавить туфельку";
+}
+
+@using (Html.BeginForm("AddMaterial", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) {
+    <div class="row">
+        @Html.HiddenFor(x => x.Id)
+    </div>
+}

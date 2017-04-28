@@ -78,12 +78,28 @@
     <Compile Include="Migrations\201704271107511_UpdateUserValidation.Designer.cs">
       <DependentUpon>201704271107511_UpdateUserValidation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704271428142_AddStaticPage.cs" />
+    <Compile Include="Migrations\201704271428142_AddStaticPage.Designer.cs">
+      <DependentUpon>201704271428142_AddStaticPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704282113299_UpdateShoesModelToReal.cs" />
+    <Compile Include="Migrations\201704282113299_UpdateShoesModelToReal.Designer.cs">
+      <DependentUpon>201704282113299_UpdateShoesModelToReal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationsConfiguration.cs" />
     <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\Person.cs" />
+    <Compile Include="Model\Place.cs" />
+    <Compile Include="Model\Group.cs" />
+    <Compile Include="Model\Material.cs" />
     <Compile Include="Model\StaticPage.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\Shoes.cs" />
     <Compile Include="Repository\BaseRepository.cs" />
+    <Compile Include="Repository\PlaceRepository.cs" />
+    <Compile Include="Repository\PersonRepository.cs" />
+    <Compile Include="Repository\GroupRepository.cs" />
+    <Compile Include="Repository\MaterialRepository.cs" />
     <Compile Include="Repository\StaticPageRepository.cs" />
     <Compile Include="Repository\UserRepository.cs" />
     <Compile Include="Repository\ShoesRepository.cs" />
@@ -120,6 +136,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704271107511_UpdateUserValidation.resx">
       <DependentUpon>201704271107511_UpdateUserValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704271428142_AddStaticPage.resx">
+      <DependentUpon>201704271428142_AddStaticPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704282113299_UpdateShoesModelToReal.resx">
+      <DependentUpon>201704282113299_UpdateShoesModelToReal.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
