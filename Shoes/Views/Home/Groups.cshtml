@@ -1,0 +1,94 @@
+﻿@model List<Dao.Model.Group>
+
+@{
+    ViewBag.Title = "Группы";
+}
+
+<h2>Добавить новые группы</h2>
+<div class="row">
+    <input type="text" class="form-control group" value="" />
+    <input type="button" value="Создать" class="form-control save add" />
+</div>
+
+<h2>Существующие материалы</h2>
+
+<div class="row">
+    @foreach (var group in Model) {
+        <div class="col-sm-2 group-block">
+            <input type="hidden" value="@group.Id" class="id"/>
+            <input type="text" class="form-control group" value="@group.Name" />
+            <input type="button" value="Переимновать" class="form-control save col-sm-1" />
+            <input type="button" value="Удалить" class="form-control delete col-sm-1" />
+        </div>
+    }
+</div>
+
+<script>
+    (function () {
+        $(".group").change(onTextChange);
+        $(".group").keydown(onTextChange);
+
+        function onTextChange() {
+            $(this).parent().find(".save").css("background", "#9ee");
+        }
+
+        $(".save").click(function () {
+            var saveButton = $(this);
+            saveButton.attr('disabled', 'disabled');
+            var id = saveButton.parent().find('.id').val();
+            var text = saveButton.parent().find('.group').val();
+            saveGroup(saveButton, id, text);
+        });
+
+        $(".add").click(function () {
+            var addButton = $(this);
+            addButton.attr('disabled', 'disabled');
+            var text = addButton.parent().find('.group').val();
+            var reload = function () {
+                location.reload();
+            }
+            saveGroup(addButton, 0, text, reload);
+        });
+
+        function saveGroup(button, id, text, additinalCallBack) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateGroup", "Home")',
+                data: {
+                    id: id,
+                    text: text,
+                },
+                success: function () {
+                    button.removeAttr('disabled');
+                    button.css("background", "#fff");
+                    if (additinalCallBack)
+                        additinalCallBack();
+                },
+            });
+        }
+
+        $(".delete").click(function () {
+            var button = $(this);
+            button.attr('disabled', 'disabled');
+
+            var id = button.parent().find('.id').val();
+            var group = button.parent().find('.group').val();
+            if (!confirm("Вы точно хотите удалить '" + group + "'?")) {
+                button.removeAttr('disabled');
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemoveGroup", "Home")',
+                data: {
+                    id: id,
+                },
+                success: function () {
+                    location.reload();
+                },
+            });
+        });
+
+    })();
+</script>

@@ -14,8 +14,12 @@ namespace Dao.Model
         public string Name { get; set; }
         public string Desc { get; set; }
         public string Notation { get; set; }
-        public string ImageUrl { get; set; }        
+        public string ImageUrl { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateOfCreating { get; set; }
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateOfPurchase { get; set; }
         public int NumberOfDuplication { get; set; }
         public bool IsPublic { get; set; }

@@ -20,7 +20,7 @@ namespace Dao.Repository
 
         public override Material Save(Material model)
         {
-            if (Exists(model.Name)) {
+            if (model.Id < 1 && Exists(model.Name)) {
                 throw new Exception("Имя материала должно быть уникальным");
             }
 

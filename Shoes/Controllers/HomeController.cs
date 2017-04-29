@@ -63,6 +63,132 @@ namespace Shoes.Controllers
             return View(user);
         }
 
+        /* ------------ Shoes ------------ */
+        public ActionResult Remove(long id)
+        {
+            var shoes = ShoesRepository.Get(id);
+            var path = Server.MapPath(shoes.ImageUrl);
+            ShoesRepository.Remove(id);
+            System.IO.File.Delete(path);
+
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult AddShoes()
+        {
+            var model = new ShoesModel();
+            var materials = MaterialRepository.GetAll();
+            var groups = GroupRepository.GetAll();
+            var places = PlaceRepository.GetAll();
+            var viewModel = new ShoesViewModel(model, materials, groups, places);
+            viewModel.NumberOfDuplication = 1;
+            return View(viewModel);
+        }
+
+        public ActionResult Edit(long id)
+        {
+            var shoes = ShoesRepository.Get(id);
+            var materials = MaterialRepository.GetAll();
+            var groups = GroupRepository.GetAll();
+            var places = PlaceRepository.GetAll();
+            var viewModel = new ShoesViewModel(shoes, materials, groups, places);
+            return View("AddShoes", viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult AddShoes(ShoesViewModel shoesViewModel, HttpPostedFile image)
+        {
+            var shoes = ShoesRepository.Get(shoesViewModel.Id);
+            if (shoes == null)
+                shoes = new ShoesModel();
+            shoesViewModel.UpdateModel(shoes);
+
+            shoes.Material = MaterialRepository.Get(shoesViewModel.MaterialId);
+            shoes.Group = GroupRepository.Get(shoesViewModel.GroupId);
+            // field File always fail validationshoesViewModel
+            var fieldWithError = ModelState.Count(x => x.Value.Errors.Count > 0);
+            if (fieldWithError <= 1) {
+                shoes = ShoesRepository.Save(shoes);
+                if (Request.Files.Count > 0) {
+                    var file = Request.Files[0];
+                    var fileName = shoes.Id + Path.GetExtension(file.FileName);
+                    if (!string.IsNullOrEmpty(file.FileName)) {
+                        file.SaveAs(GetPathToImg(fileName));
+                        shoes.ImageUrl = Url.Content("~/Content/img/" + fileName);
+                        shoes = ShoesRepository.Save(shoes);
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        /* ------------ Material ------------ */
+        public ActionResult Materials()
+        {
+            var models = MaterialRepository.GetAll();
+            return View(models);
+        }
+
+        public JsonResult UpdateMaterial(long id, string text)
+        {
+            var model = MaterialRepository.Get(id);
+            if (model == null) {
+                model = new Material();
+            }
+            model.Name = text;
+            MaterialRepository.Save(model);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult RemoveMaterial(long id)
+        {
+            MaterialRepository.Remove(id);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        /* ------------ Group ------------ */
+        public ActionResult Groups()
+        {
+            var models = GroupRepository.GetAll();
+            return View(models);
+        }
+
+        public JsonResult UpdateGroup(long id, string text)
+        {
+            var model = GroupRepository.Get(id);
+            if (model == null) {
+                model = new Group();
+            }
+            model.Name = text;
+            GroupRepository.Save(model);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult RemoveGroup(long id)
+        {
+            GroupRepository.Remove(id);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        /* ------------ StaticPages ------------ */
+        public ActionResult StaticPages()
+        {
+            return View();
+        }
+
+        public ActionResult AboutCollection()
+        {
+            return View();
+        }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index");
+        }
+
+        /* ------------ Generate data ------------ */
         [AllowAnonymous]
         public ActionResult CreateBaseUser()
         {
@@ -85,77 +211,12 @@ namespace Shoes.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Remove(long id)
-        {
-            var shoes = ShoesRepository.Get(id);
-            var path = Server.MapPath(shoes.ImageUrl);
-            ShoesRepository.Remove(id);
-            System.IO.File.Delete(path);
-
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult AddShoes()
-        {
-            var model = new ShoesModel();
-            var materials = MaterialRepository.GetAll();
-            var groups = GroupRepository.GetAll();
-            var places = PlaceRepository.GetAll();
-            var viewModel = new ShoesViewModel(model, materials, groups, places);
-            return View(viewModel);
-        }
-
-        public ActionResult Edit(long id)
-        {
-            var shoes = ShoesRepository.Get(id);
-            var materials = MaterialRepository.GetAll();
-            var groups = GroupRepository.GetAll();
-            var places = PlaceRepository.GetAll();
-            var viewModel = new ShoesViewModel(shoes, materials, groups, places);
-            return View("AddShoes", viewModel);
-        }
-
-        public ActionResult StaticPages()
-        {
-            return View();
-        }
-
-        public ActionResult AboutCollection()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult AddShoes(ShoesViewModel shoesViewModel, HttpPostedFile image)
-        {
-            ShoesModel shoes = shoesViewModel as ShoesModel;
-            // field File always fail validationshoesViewModel
-            var fieldWithError = ModelState.Count(x => x.Value.Errors.Count > 0);
-            if (fieldWithError <= 1) {
-                shoes = ShoesRepository.Save(shoes);
-                if (Request.Files.Count > 0) {
-                    var file = Request.Files[0];
-                    var fileName = shoes.Id + Path.GetExtension(file.FileName);
-                    if (!string.IsNullOrEmpty(file.FileName)) {
-                        file.SaveAs(GetPathToImg(fileName));
-                        shoes.ImageUrl = Url.Content("~/Content/img/" + fileName);
-                        shoes = ShoesRepository.Save(shoes);
-                    }
-                }
-            }
-
-            return View(shoes);
-        }
-
-        public ActionResult Logout()
-        {
-            FormsAuthentication.SignOut();
-            return RedirectToAction("Index");
-        }
-
         public ActionResult GenerateSeed()
         {
             var groups = new List<Group>();
+            groups.Add(new Group() {
+                Name = "---"
+            });
             groups.Add(new Group() {
                 Name = "оберег"
             });
@@ -168,6 +229,9 @@ namespace Shoes.Controllers
             GroupRepository.Save(groups);
 
             var materials = new List<Material>();
+            materials.Add(new Material() {
+                Name = "---"
+            });
             materials.Add(new Material() {
                 Name = "фарфор"
             });

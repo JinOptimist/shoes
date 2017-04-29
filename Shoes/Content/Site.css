@@ -67,3 +67,19 @@ textarea {
 .lvov .navbar-inverse .navbar-nav > li > a {
 
 }
+
+.material-block{
+    margin: 10px;
+}
+
+.group-block {
+    margin: 10px;
+}
+
+.lvov .form-control.delete {
+    background: #ff6666;
+}
+
+.shoes-block{
+    padding: 10px;
+}

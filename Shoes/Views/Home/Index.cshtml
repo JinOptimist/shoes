@@ -5,21 +5,36 @@
 
 <div class="page-header">
     <h1>Полная коллекция</h1>
+    <input type="button" class="size" value="Маленькие" id="small"/>
+    <input type="button" class="size" value="Средние"  id="medium"/>
+    <input type="button" class="size" value="Большие"  id="big"/>
+    <input type="button" class="size" value="Целиком" id="full" />
 </div>
 
 @if (Model != null) {
-    foreach (var shoes in Model.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
-        <div class="row">
-            <img class="col-sm-6" src="@shoes.ImageUrl" />
+    <div class="row">
+        @foreach (var shoes in Model.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
+        <div class="col-sm-4 shoes-block">
+            <img src="@shoes.ImageUrl" class="col-sm-6"/>
             <div class="col-sm-6">
                 <p>
-                    @shoes.Name
+                    Название: @shoes.Name
                 </p>
                 <p>
-                    @shoes.Desc
+                    Материал: @shoes.Material.Name
                 </p>
-
+                <p>
+                    Группа: @shoes.Group.Name
+                </p>
+                @if (shoes.DateOfPurchase.HasValue) {
+                    <p>
+                        Дата появления в коллекции: @(shoes.DateOfPurchase.Value.Year)
+                    </p>
+                }
                 @if (User.Identity.IsAuthenticated) {
+                    <p>
+                        Описание: @shoes.Desc
+                    </p>
                     <p>
                         <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
                     </p>
@@ -28,8 +43,41 @@
                     </p>
                 }
             </div>
+            <hr />
         </div>
-        <hr />
-    }
+        }
+    </div>
 }
 
+<script>
+    (function () {
+        $(".size").click(function () {
+            var type = $(this).attr("id");
+            switch (type) {
+                case "small":
+                    clear();
+                    $(".shoes-block").addClass("col-sm-3");
+                    break;
+                case "medium":
+                    clear();
+                    $(".shoes-block").addClass("col-sm-4");
+                    break;
+                case "big":
+                    clear();
+                    $(".shoes-block").addClass("col-sm-6");
+                    break;
+                case "full":
+                    clear();
+                    $(".shoes-block").addClass("col-sm-12");
+                    break;
+            }
+            });
+
+        function clear() {
+            $(".shoes-block").removeClass("col-sm-3");
+            $(".shoes-block").removeClass("col-sm-4");
+            $(".shoes-block").removeClass("col-sm-6");
+            $(".shoes-block").removeClass("col-sm-12");
+        }
+    })();
+</script>

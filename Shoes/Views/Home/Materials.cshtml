@@ -1,0 +1,94 @@
+﻿@model List<Dao.Model.Material>
+
+@{
+    ViewBag.Title = "Материалы";
+}
+
+<h2>Добавить новый</h2>
+<div class="row">
+    <input type="text" class="form-control material" value="" />
+    <input type="button" value="Создать" class="form-control save add" />
+</div>
+
+<h2>Существующие материалы</h2>
+
+<div class="row">
+    @foreach (var material in Model) {
+        <div class="col-sm-2 material-block">
+            <input type="hidden" value="@material.Id" class="id"/>
+            <input type="text" class="form-control material" value="@material.Name" />
+            <input type="button" value="Переимновать" class="form-control save col-sm-1" />
+            <input type="button" value="Удалить" class="form-control delete col-sm-1" />
+        </div>
+    }
+</div>
+
+<script>
+    (function () {
+        $(".material").change(onTextChange);
+        $(".material").keydown(onTextChange);
+
+        function onTextChange() {
+            $(this).parent().find(".save").css("background", "#9ee");
+        }
+
+        $(".save").click(function () {
+            var saveButton = $(this);
+            saveButton.attr('disabled', 'disabled');
+            var id = saveButton.parent().find('.id').val();
+            var text = saveButton.parent().find('.material').val();
+            saveMaterial(saveButton, id, text);
+        });
+
+        $(".add").click(function () {
+            var addButton = $(this);
+            addButton.attr('disabled', 'disabled');
+            var text = addButton.parent().find('.material').val();
+            var reload = function () {
+                location.reload();
+            }
+            saveMaterial(addButton, 0, text, reload);
+        });
+
+        function saveMaterial(button, id, text, additinalCallBack) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateMaterial", "Home")',
+                data: {
+                    id: id,
+                    text: text,
+                },
+                success: function () {
+                    button.removeAttr('disabled');
+                    button.css("background", "#fff");
+                    if (additinalCallBack)
+                        additinalCallBack();
+                },
+            });
+        }
+
+        $(".delete").click(function () {
+            var button = $(this);
+            button.attr('disabled', 'disabled');
+
+            var id = button.parent().find('.id').val();
+            var material = button.parent().find('.material').val();
+            if (!confirm("Вы точно хотите удалить '" + material + "'?")) {
+                button.removeAttr('disabled');
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemoveMaterial", "Home")',
+                data: {
+                    id: id,
+                },
+                success: function () {
+                    location.reload();
+                },
+            });
+        });
+
+    })();
+</script>

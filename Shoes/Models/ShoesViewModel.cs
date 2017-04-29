@@ -23,7 +23,9 @@ namespace Shoes.Models
             IsPublic = shoes.IsPublic;
 
             Material = shoes.Material;
+            MaterialId = Material?.Id ?? 0;
             Group = shoes.Group;
+            GroupId = Group?.Id ?? 0;
             PlaceOfProduce = shoes.PlaceOfProduce;
             PlaceOfBuying = shoes.PlaceOfBuying;
 
@@ -46,8 +48,25 @@ namespace Shoes.Models
             }).ToList();
         }
 
+        public long MaterialId { get; set; }
+        public long GroupId { get; set; }
+
         public List<SelectListItem> MaterialList { get; set; }
         public List<SelectListItem> PlaceList { get; set; }
         public List<SelectListItem> GroupList { get; set; }
+
+        public void UpdateModel(Dao.Model.Shoes dbShoes)
+        {
+            dbShoes.Id = Id;
+            dbShoes.OldId = OldId;
+            dbShoes.Name = Name;
+            dbShoes.Desc = Desc;
+            dbShoes.Notation = Notation;
+            dbShoes.ImageUrl = ImageUrl;
+            dbShoes.DateOfCreating = DateOfCreating;
+            dbShoes.DateOfPurchase = DateOfPurchase;
+            dbShoes.NumberOfDuplication = NumberOfDuplication;
+            dbShoes.IsPublic = IsPublic;
+        }
     }
 }

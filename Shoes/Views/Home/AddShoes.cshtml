@@ -1,10 +1,11 @@
 ﻿@model Shoes.Models.ShoesViewModel
 @{
     ViewBag.Title = "Добавить туфельку";
+    var isNew = Model.Id <= 0;
 }
 
 <div class="page-header">
-    <h1>Добавить туфельку</h1>
+    <h1>@(isNew ? "Добавить" :"Редактировать") туфельку</h1>
 </div>
 
 @using (Html.BeginForm("AddShoes", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) {
@@ -36,11 +37,11 @@
 
             <div class="form-group">
                 <label for="Desc">Материал:</label>
-                @Html.DropDownListFor(x => x.Material.Id, Model.MaterialList , new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.MaterialId, Model.MaterialList , new { @class = "form-control" })
             </div>
             <div class="form-group">
                 <label for="Desc">Группа:</label>
-                @Html.DropDownListFor(x => x.Group.Id, Model.GroupList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.GroupId, Model.GroupList, new { @class = "form-control" })
             </div>            
             <div class="form-group">
                 <label for="PlaceOfBuying">Страна приобретение:</label>
@@ -53,11 +54,11 @@
 
             <div class="form-group">
                 <label for="DateOfPurchase">Дата приобретение:</label>
-                @Html.TextBoxFor(x => x.DateOfPurchase, new { @class = "form-control", type = "date" })
+                <input type="date" id="DateOfPurchase"  name="DateOfPurchase" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfPurchase)" class="form-control" />
             </div>
             <div class="form-group">
                 <label for="DateOfCreating">Дата создания:</label>
-                @Html.TextBoxFor(x => x.DateOfCreating, new { @class = "form-control", type = "date" })
+                <input type="date" id="DateOfCreating" name="DateOfCreating" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfCreating)" class="form-control" />
             </div>
 
             <div class="form-group">
@@ -68,16 +69,11 @@
                 <label for="NumberOfDuplication">Количечство дубликатов:</label>
                 @Html.TextBoxFor(x => x.NumberOfDuplication, new { @class = "form-control" })
             </div>
-
-            
-            
-
             <div class="form-group">
                 <label for="Desc">Примечания:</label>
                 @Html.TextAreaFor(x => x.Notation, new { @class = "form-control" })
             </div>
-
-            <input type="submit" value="Создать" class="form-control" />
+            <input type="submit" value="@(isNew ? "Создать" :"Редактировать") " class="form-control" />
         </div>
         <img class="col-sm-6" id="preview" src="@Model.ImageUrl" />
     </div>
