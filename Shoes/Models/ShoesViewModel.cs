@@ -13,6 +13,7 @@ namespace Shoes.Models
         {
             Id = shoes.Id;
             OldId = shoes.OldId;
+            OldIdLvl2 = shoes.OldIdLvl2;
             Name = shoes.Name;
             Desc = shoes.Desc;
             Notation = shoes.Notation;
@@ -26,21 +27,39 @@ namespace Shoes.Models
             MaterialId = Material?.Id ?? 0;
             Group = shoes.Group;
             GroupId = Group?.Id ?? 0;
-            PlaceOfProduce = shoes.PlaceOfProduce;
             PlaceOfBuying = shoes.PlaceOfBuying;
+            PlaceOfBuyingId = PlaceOfBuying?.Id ?? 0;
+            PlaceOfProduce = shoes.PlaceOfProduce;
+            PlaceOfProduceId = PlaceOfProduce?.Id ?? 0;
 
             Givers = shoes.Givers;
             ConnectedShoes = shoes.ConnectedShoes;
 
-            MaterialList = materials?.Select(x=> new SelectListItem() {
+            InitMaterialList(materials);
+            InitGroupList(groups);
+            InitPlaceList(places);
+        }
+
+        public long MaterialId { get; set; }
+        public long GroupId { get; set; }
+        public long PlaceOfBuyingId { get; set; }
+        public long PlaceOfProduceId { get; set; }
+
+        public List<SelectListItem> MaterialList { get; set; }
+        public List<SelectListItem> PlaceList { get; set; }
+        public List<SelectListItem> GroupList { get; set; }
+
+        public void InitMaterialList(List<Material> materials)
+        {
+            MaterialList = materials?.Select(x => new SelectListItem() {
                 Text = x.Name,
                 Value = x.Id.ToString(),
                 Selected = Material?.Id == x.Id
             }).ToList();
-            PlaceList = places?.Select(x => new SelectListItem() {
-                Text = x.CountryName,
-                Value = x.Id.ToString(),
-            }).ToList();
+        }
+
+        public void InitGroupList(List<Group> groups)
+        {
             GroupList = groups?.Select(x => new SelectListItem() {
                 Text = x.Name,
                 Value = x.Id.ToString(),
@@ -48,17 +67,26 @@ namespace Shoes.Models
             }).ToList();
         }
 
-        public long MaterialId { get; set; }
-        public long GroupId { get; set; }
-
-        public List<SelectListItem> MaterialList { get; set; }
-        public List<SelectListItem> PlaceList { get; set; }
-        public List<SelectListItem> GroupList { get; set; }
+        public void InitPlaceList(List<Place> places)
+        {
+            var groups = places.Select(x => x.CountryName).Distinct().Select(
+                x => new SelectListGroup {
+                    Name = x
+                }).ToList();
+            PlaceList = places?.Select(x => new SelectListItem() {
+                Group = groups.FirstOrDefault(gr => gr.Name == x.CountryName),
+                Text = x.CountryName + " " + x.CityName,
+                Value = x.Id.ToString()
+            }).ToList();
+        }
 
         public void UpdateModel(Dao.Model.Shoes dbShoes)
         {
             dbShoes.Id = Id;
             dbShoes.OldId = OldId;
+            dbShoes.OldIdLvl2 = OldIdLvl2;
+            dbShoes.Width = Width;
+            dbShoes.Height = Height;
             dbShoes.Name = Name;
             dbShoes.Desc = Desc;
             dbShoes.Notation = Notation;

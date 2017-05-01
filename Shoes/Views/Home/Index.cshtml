@@ -4,7 +4,7 @@
 }
 
 <div class="page-header">
-    <h1>Полная коллекция</h1>
+    <h1>Полная коллекция @Model.Count() шт</h1>
     <input type="button" class="size" value="Маленькие" id="small"/>
     <input type="button" class="size" value="Средние"  id="medium"/>
     <input type="button" class="size" value="Большие"  id="big"/>
@@ -18,6 +18,11 @@
             <img src="@shoes.ImageUrl" class="col-sm-6"/>
             <div class="col-sm-6">
                 <p>
+                    @if (User.Identity.IsAuthenticated) {
+                        <span>№@(shoes.OldId + (shoes.OldIdLvl2 != 0 
+                            ? "." + shoes.OldIdLvl2 
+                            : string.Empty))</span>
+                    }
                     Название: @shoes.Name
                 </p>
                 <p>
@@ -34,6 +39,15 @@
                 @if (User.Identity.IsAuthenticated) {
                     <p>
                         Описание: @shoes.Desc
+                    </p>
+                    <p>
+                        Размер: @shoes.Width * @shoes.Height
+                    </p>
+                    <p>
+                        Место покупки: @shoes.PlaceOfBuying.CountryName
+                            @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
+                                ? string.Empty
+                                : shoes.PlaceOfBuying.CityName)
                     </p>
                     <p>
                         <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>

@@ -38,7 +38,7 @@ namespace Shoes.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
-            var models = ShoesRepository.GetAll();
+            var models = ShoesRepository.GetAll().OrderBy(x => x.OldIdLvl2).OrderBy(x => x.OldId);
             return View(models);
         }
 
@@ -81,7 +81,10 @@ namespace Shoes.Controllers
             var groups = GroupRepository.GetAll();
             var places = PlaceRepository.GetAll();
             var viewModel = new ShoesViewModel(model, materials, groups, places);
+            viewModel.Width = 1;
+            viewModel.Height = 1;
             viewModel.NumberOfDuplication = 1;
+
             return View(viewModel);
         }
 
@@ -98,16 +101,20 @@ namespace Shoes.Controllers
         [HttpPost]
         public ActionResult AddShoes(ShoesViewModel shoesViewModel, HttpPostedFile image)
         {
-            var shoes = ShoesRepository.Get(shoesViewModel.Id);
-            if (shoes == null)
-                shoes = new ShoesModel();
-            shoesViewModel.UpdateModel(shoes);
+            var isOldIdUniq = ShoesRepository.IsOldIdUniq(shoesViewModel);
+            if (isOldIdUniq)
+                ModelState.AddModelError("OldId", "Туфелька с номером " + shoesViewModel.OldId + " уже сущесвтует");
+            var modelHasError = ModelState.Where(x => x.Key != "image").Any(x => x.Value.Errors.Count > 0);
+            if (!modelHasError) {
+                var shoes = ShoesRepository.Get(shoesViewModel.Id);
+                if (shoes == null)
+                    shoes = new ShoesModel();
+                shoesViewModel.UpdateModel(shoes);
+                shoes.Material = MaterialRepository.Get(shoesViewModel.MaterialId);
+                shoes.Group = GroupRepository.Get(shoesViewModel.GroupId);
+                shoes.PlaceOfBuying = PlaceRepository.Get(shoesViewModel.PlaceOfBuyingId);
+                shoes.PlaceOfProduce = PlaceRepository.Get(shoesViewModel.PlaceOfProduceId);
 
-            shoes.Material = MaterialRepository.Get(shoesViewModel.MaterialId);
-            shoes.Group = GroupRepository.Get(shoesViewModel.GroupId);
-            // field File always fail validationshoesViewModel
-            var fieldWithError = ModelState.Count(x => x.Value.Errors.Count > 0);
-            if (fieldWithError <= 1) {
                 shoes = ShoesRepository.Save(shoes);
                 if (Request.Files.Count > 0) {
                     var file = Request.Files[0];
@@ -118,9 +125,18 @@ namespace Shoes.Controllers
                         shoes = ShoesRepository.Save(shoes);
                     }
                 }
+
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            var materials = MaterialRepository.GetAll();
+            var groups = GroupRepository.GetAll();
+            var places = PlaceRepository.GetAll();
+            shoesViewModel.InitMaterialList(materials);
+            shoesViewModel.InitGroupList(groups);
+            shoesViewModel.InitPlaceList(places);
+
+            return View(shoesViewModel);
         }
 
         /* ------------ Material ------------ */
@@ -168,6 +184,32 @@ namespace Shoes.Controllers
         public JsonResult RemoveGroup(long id)
         {
             GroupRepository.Remove(id);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        /* ------------ Place ------------ */
+        public ActionResult Places()
+        {
+            var models = PlaceRepository.GetAll();
+            return View(models);
+        }
+
+        public JsonResult UpdatePlace(long id, string countryName, string cityName)
+        {
+            var model = PlaceRepository.Get(id);
+            if (model == null) {
+                model = new Place();
+            }
+
+            model.CountryName = countryName;
+            model.CityName = cityName;
+            PlaceRepository.Save(model);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult RemovePlace(long id)
+        {
+            PlaceRepository.Remove(id);
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 

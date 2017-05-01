@@ -5,7 +5,7 @@
 }
 
 <div class="page-header">
-    <h1>@(isNew ? "Добавить" :"Редактировать") туфельку</h1>
+    <h1>@(isNew ? "Добавить" : "Редактировать") туфельку</h1>
 </div>
 
 @using (Html.BeginForm("AddShoes", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) {
@@ -14,67 +14,94 @@
         @Html.HiddenFor(x => x.ImageUrl)
         @Html.ValidationSummary()
         <div class="col-sm-6">
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="image">Картинка:</label>
                 <input type="file" name="image" id="image" />
             </div>
-            <div class="form-group">
-                <label for="Name">Название:</label>
+            <div class="form-group row">
                 <p>
                     @Html.ValidationMessageFor(x => x.Name)
                 </p>
-                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = "Название" })
             </div>
-            <div class="form-group">
-                <label for="Desc">Описание:</label>
-                @Html.TextAreaFor(x => x.Desc, new { @class = "form-control" })
+            <div class="form-group row">
+                <label for="Name">Номер:</label>
+                <p>
+                    @Html.ValidationMessageFor(x => x.OldId)
+                </p>
+                <div class="col-xs-3">
+                    @Html.TextBoxFor(x => x.OldId, new { @class = "form-control", type = "number" })
+                </div>
+                <div class="col-xs-2">
+                    <input id="openLvl2" type="button" class="form-control" value="+" />
+                </div>
+                <div class="col-xs-3 oldIdLvl2">
+                    @Html.TextBoxFor(x => x.OldIdLvl2, new { @class = "form-control", type = "number" })
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="Desc">Размер:</label>
-                Размер
+            <div class="form-group row">
+                <label for="Name">Размер:</label>
+                <p>
+                    @Html.ValidationMessageFor(x => x.Width)
+                    @Html.ValidationMessageFor(x => x.Height)
+                </p>
+                <div class="col-xs-3">
+                    @Html.TextBoxFor(x => x.Width, new { @class = "form-control", type = "number" })
+                </div>
+                <div class="col-xs-3">
+                    @Html.TextBoxFor(x => x.Height, new { @class = "form-control", type = "number" })
+                </div>
             </div>
-
-            <div class="form-group">
+            <div class="form-group row">
+                @Html.TextAreaFor(x => x.Desc, new { @class = "form-control", placeholder = "Описание" })
+            </div>
+            <div class="form-group row">
                 <label for="Desc">Материал:</label>
-                @Html.DropDownListFor(x => x.MaterialId, Model.MaterialList , new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.MaterialId, Model.MaterialList, new { @class = "form-control" })
             </div>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="Desc">Группа:</label>
                 @Html.DropDownListFor(x => x.GroupId, Model.GroupList, new { @class = "form-control" })
-            </div>            
-            <div class="form-group">
-                <label for="PlaceOfBuying">Страна приобретение:</label>
-                @Html.DropDownListFor(x => x.PlaceOfBuying.Id, Model.PlaceList, new { @class = "form-control" })
             </div>
-            <div class="form-group">
-                <label for="PlaceOfProduce">Страна создания:</label>
-                @Html.DropDownListFor(x => x.PlaceOfProduce.Id, Model.PlaceList, new { @class = "form-control" })
+            <div class="form-group row">
+                <label for="PlaceOfBuying">Место приобретение:</label>
+                @Html.DropDownListFor(x => x.PlaceOfBuyingId, Model.PlaceList, new { @class = "form-control" })
             </div>
-
-            <div class="form-group">
+            <div class="form-group row">
+                <label for="PlaceOfProduce">Место создания:</label>
+                @Html.DropDownListFor(x => x.PlaceOfProduceId, Model.PlaceList, new { @class = "form-control" })
+            </div>
+            <div class="form-group row">
                 <label for="DateOfPurchase">Дата приобретение:</label>
-                <input type="date" id="DateOfPurchase"  name="DateOfPurchase" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfPurchase)" class="form-control" />
+                <input type="date" id="DateOfPurchase" name="DateOfPurchase" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfPurchase)" class="form-control" />
             </div>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="DateOfCreating">Дата создания:</label>
                 <input type="date" id="DateOfCreating" name="DateOfCreating" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfCreating)" class="form-control" />
             </div>
-
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="IsPublic">Виден всем:</label>
                 @Html.CheckBoxFor(x => x.IsPublic, new { @class = "form-control" })
             </div>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="NumberOfDuplication">Количечство дубликатов:</label>
                 @Html.TextBoxFor(x => x.NumberOfDuplication, new { @class = "form-control" })
             </div>
-            <div class="form-group">
-                <label for="Desc">Примечания:</label>
-                @Html.TextAreaFor(x => x.Notation, new { @class = "form-control" })
+            <div class="form-group row">
+                @Html.TextAreaFor(x => x.Notation, new { @class = "form-control", placeholder = "Примечания" })
             </div>
-            <input type="submit" value="@(isNew ? "Создать" :"Редактировать") " class="form-control" />
+            <div class="form-group row">
+                <input type="submit" value="@(isNew ? "Создать" :"Редактировать") " class="form-control" />
+            </div>
         </div>
         <img class="col-sm-6" id="preview" src="@Model.ImageUrl" />
     </div>
 }
+
+<script>
+    (function () {
+        $("#openLvl2").click(function () {
+            $(".oldIdLvl2").css("visibility", "visible");
+        });
+    })()
+</script>

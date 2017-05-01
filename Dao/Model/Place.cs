@@ -10,5 +10,6 @@ namespace Dao.Model
     public class Place : BaseModel
     {
         public string CountryName { get; set; }
+        public string CityName { get; set; }
     }
 }

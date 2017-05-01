@@ -1,0 +1,100 @@
+﻿@model List<Dao.Model.Place>
+
+@{
+    ViewBag.Title = "Локации";
+}
+
+<h2>Добавить новую</h2>
+<div class="row">
+    <input type="text" class="form-control country-name" value="" placeholder="Страна" />
+    <input type="text" class="form-control city-name" value="" placeholder="Город" />
+    <input type="button" value="Создать" class="form-control save add" />
+</div>
+
+<h2>Существующие локации</h2>
+<div class="row">
+    @foreach (var place in Model) {
+        <div class="col-sm-2 place-block">
+            <input type="hidden" value="@place.Id" class="id"/>
+            <input type="text" class="form-control country-name" value="@place.CountryName" />
+            <input type="text" class="form-control city-name" value="@place.CityName" />
+            <input type="button" value="Переимновать" class="form-control save col-sm-1" />
+            <input type="button" value="Удалить" class="form-control delete col-sm-1" />
+        </div>
+    }
+</div>
+
+<script>
+    (function () {
+        $(".country-name").change(onTextChange);
+        $(".city-name").change(onTextChange);
+        $(".country-name").keydown(onTextChange);
+        $(".city-name").keydown(onTextChange);
+
+        function onTextChange() {
+            $(this).parent().find(".save").css("background", "#9ee");
+        }
+
+        $(".save").click(function () {
+            var saveButton = $(this);
+            saveButton.attr('disabled', 'disabled');
+            var id = saveButton.parent().find('.id').val();
+            var countryName = saveButton.parent().find('.country-name').val();
+            var cityName = saveButton.parent().find('.city-name').val();
+            savePlace(saveButton, id, countryName, cityName);
+        });
+
+        $(".add").click(function () {
+            var addButton = $(this);
+            addButton.attr('disabled', 'disabled');
+            var countryName = addButton.parent().find('.country-name').val();
+            var cityName = addButton.parent().find('.city-name').val();
+            var reload = function () {
+                location.reload();
+            }
+            savePlace(addButton, 0, countryName, cityName, reload);
+        });
+
+        function savePlace(button, id, countryName, cityName, additinalCallBack) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePlace", "Home")',
+                data: {
+                    id: id,
+                    countryName: countryName,
+                    cityName: cityName,
+                },
+                success: function () {
+                    button.removeAttr('disabled');
+                    button.css("background", "#fff");
+                    if (additinalCallBack)
+                        additinalCallBack();
+                },
+            });
+        }
+
+        $(".delete").click(function () {
+            var button = $(this);
+            button.attr('disabled', 'disabled');
+
+            var id = button.parent().find('.id').val();
+            var place = button.parent().find('.place').val();
+            if (!confirm("Вы точно хотите удалить '" + place + "'?")) {
+                button.removeAttr('disabled');
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemovePlace", "Home")',
+                data: {
+                    id: id,
+                },
+                success: function () {
+                    location.reload();
+                },
+            });
+        });
+
+    })();
+</script>

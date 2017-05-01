@@ -86,6 +86,22 @@
     <Compile Include="Migrations\201704282113299_UpdateShoesModelToReal.Designer.cs">
       <DependentUpon>201704282113299_UpdateShoesModelToReal.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704302019398_oldIdIsUniq.cs" />
+    <Compile Include="Migrations\201704302019398_oldIdIsUniq.Designer.cs">
+      <DependentUpon>201704302019398_oldIdIsUniq.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704302227094_combineOldIdUniq.cs" />
+    <Compile Include="Migrations\201704302227094_combineOldIdUniq.Designer.cs">
+      <DependentUpon>201704302227094_combineOldIdUniq.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704302305419_AddWidthAndHeight.cs" />
+    <Compile Include="Migrations\201704302305419_AddWidthAndHeight.Designer.cs">
+      <DependentUpon>201704302305419_AddWidthAndHeight.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704302351086_AddCountryAndCity.cs" />
+    <Compile Include="Migrations\201704302351086_AddCountryAndCity.Designer.cs">
+      <DependentUpon>201704302351086_AddCountryAndCity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationsConfiguration.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Person.cs" />
@@ -142,6 +158,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704282113299_UpdateShoesModelToReal.resx">
       <DependentUpon>201704282113299_UpdateShoesModelToReal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704302019398_oldIdIsUniq.resx">
+      <DependentUpon>201704302019398_oldIdIsUniq.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704302227094_combineOldIdUniq.resx">
+      <DependentUpon>201704302227094_combineOldIdUniq.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704302305419_AddWidthAndHeight.resx">
+      <DependentUpon>201704302305419_AddWidthAndHeight.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704302351086_AddCountryAndCity.resx">
+      <DependentUpon>201704302351086_AddCountryAndCity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

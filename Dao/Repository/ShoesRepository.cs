@@ -12,5 +12,12 @@ namespace Dao.Repository
         public ShoesRepository(ShoesContext db) : base(db)
         {
         }
+
+        public bool IsOldIdUniq(Shoes shoes)
+        {
+            return Entity.Any(x => x.OldId == shoes.OldId 
+                                && x.OldIdLvl2 == shoes.OldIdLvl2 
+                                && x.Id != shoes.Id);
+        }
     }
 }
