@@ -80,7 +80,8 @@ namespace Shoes.Controllers
             var materials = MaterialRepository.GetAll();
             var groups = GroupRepository.GetAll();
             var places = PlaceRepository.GetAll();
-            var viewModel = new ShoesViewModel(model, materials, groups, places);
+            var givers = PersonRepository.GetAll();
+            var viewModel = new ShoesViewModel(model, materials, groups, places, givers);
             viewModel.Width = 1;
             viewModel.Height = 1;
             viewModel.NumberOfDuplication = 1;
@@ -94,7 +95,8 @@ namespace Shoes.Controllers
             var materials = MaterialRepository.GetAll();
             var groups = GroupRepository.GetAll();
             var places = PlaceRepository.GetAll();
-            var viewModel = new ShoesViewModel(shoes, materials, groups, places);
+            var givers = PersonRepository.GetAll();
+            var viewModel = new ShoesViewModel(shoes, materials, groups, places, givers);
             return View("AddShoes", viewModel);
         }
 
@@ -114,6 +116,7 @@ namespace Shoes.Controllers
                 shoes.Group = GroupRepository.Get(shoesViewModel.GroupId);
                 shoes.PlaceOfBuying = PlaceRepository.Get(shoesViewModel.PlaceOfBuyingId);
                 shoes.PlaceOfProduce = PlaceRepository.Get(shoesViewModel.PlaceOfProduceId);
+                shoes.Giver = PersonRepository.Get(shoesViewModel.GiverId);
 
                 shoes = ShoesRepository.Save(shoes);
                 if (Request.Files.Count > 0) {
@@ -132,9 +135,11 @@ namespace Shoes.Controllers
             var materials = MaterialRepository.GetAll();
             var groups = GroupRepository.GetAll();
             var places = PlaceRepository.GetAll();
+            var givers = PersonRepository.GetAll();
             shoesViewModel.InitMaterialList(materials);
             shoesViewModel.InitGroupList(groups);
             shoesViewModel.InitPlaceList(places);
+            shoesViewModel.InitGiverList(givers);
 
             return View(shoesViewModel);
         }
@@ -210,6 +215,32 @@ namespace Shoes.Controllers
         public JsonResult RemovePlace(long id)
         {
             PlaceRepository.Remove(id);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        
+        /* ------------ Person ------------ */
+        public ActionResult Persons()
+        {
+            var models = PersonRepository.GetAll();
+            return View(models);
+        }
+
+        public JsonResult UpdatePerson(long id, string lastName, string firstName)
+        {
+            var model = PersonRepository.Get(id);
+            if (model == null) {
+                model = new Person();
+            }
+
+            model.FirstName = firstName;
+            model.LastName = lastName;
+            PersonRepository.Save(model);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult RemovePerson(long id)
+        {
+            PersonRepository.Remove(id);
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 

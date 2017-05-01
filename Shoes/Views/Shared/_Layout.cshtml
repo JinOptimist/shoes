@@ -45,6 +45,9 @@
                         <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Places" ? "active" : "")">
                             @Html.ActionLink("Локации", "Places", "Home", new { area = "" }, new { @class = "navbar-brand" })
                         </li>
+                        <li class="@(ViewContext.RouteData.Values["Action"].ToString() == "Persons" ? "active" : "")">
+                            @Html.ActionLink("Дарители", "Persons", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                        </li>
                         <li>
                             @Html.ActionLink("Выйти", "Logout", "Home", new { area = "" }, new { @class = "navbar-brand" })
                         </li>

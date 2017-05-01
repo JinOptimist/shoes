@@ -18,12 +18,14 @@
             <img src="@shoes.ImageUrl" class="col-sm-6"/>
             <div class="col-sm-6">
                 <p>
+                    @shoes.Name
                     @if (User.Identity.IsAuthenticated) {
-                        <span>№@(shoes.OldId + (shoes.OldIdLvl2 != 0 
-                            ? "." + shoes.OldIdLvl2 
-                            : string.Empty))</span>
+                        <span>
+                            №@(shoes.OldId + (shoes.OldIdLvl2 != 0
+                            ? "." + shoes.OldIdLvl2
+                            : string.Empty))
+                        </span>
                     }
-                    Название: @shoes.Name
                 </p>
                 <p>
                     Материал: @shoes.Material.Name
@@ -48,6 +50,9 @@
                             @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
                                 ? string.Empty
                                 : shoes.PlaceOfBuying.CityName)
+                    </p>
+                    <p>
+                        Даритель: @shoes.Giver.LastName @shoes.Giver.FirstName
                     </p>
                     <p>
                         <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>

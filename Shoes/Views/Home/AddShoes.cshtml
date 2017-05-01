@@ -64,6 +64,10 @@
                 @Html.DropDownListFor(x => x.GroupId, Model.GroupList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
+                <label for="Desc">Даритель:</label>
+                @Html.DropDownListFor(x => x.GiverId, Model.GiversList, new { @class = "form-control" })
+            </div>
+            <div class="form-group row">
                 <label for="PlaceOfBuying">Место приобретение:</label>
                 @Html.DropDownListFor(x => x.PlaceOfBuyingId, Model.PlaceList, new { @class = "form-control" })
             </div>

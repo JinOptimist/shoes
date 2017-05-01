@@ -9,13 +9,19 @@ namespace Shoes.Models
     {
         public ShoesViewModel() { }
 
-        public ShoesViewModel(Dao.Model.Shoes shoes, List<Material> materials, List<Group> groups, List<Place> places)
+        public ShoesViewModel(Dao.Model.Shoes shoes,
+            List<Material> materials,
+            List<Group> groups,
+            List<Place> places,
+            List<Person> givers)
         {
             Id = shoes.Id;
             OldId = shoes.OldId;
             OldIdLvl2 = shoes.OldIdLvl2;
             Name = shoes.Name;
             Desc = shoes.Desc;
+            Width = shoes.Width;
+            Height = shoes.Height;
             Notation = shoes.Notation;
             ImageUrl = shoes.ImageUrl;
             DateOfCreating = shoes.DateOfCreating;
@@ -27,27 +33,32 @@ namespace Shoes.Models
             MaterialId = Material?.Id ?? 0;
             Group = shoes.Group;
             GroupId = Group?.Id ?? 0;
+            Giver = shoes.Giver;
+            GiverId = Giver?.Id ?? 0;
             PlaceOfBuying = shoes.PlaceOfBuying;
             PlaceOfBuyingId = PlaceOfBuying?.Id ?? 0;
             PlaceOfProduce = shoes.PlaceOfProduce;
             PlaceOfProduceId = PlaceOfProduce?.Id ?? 0;
 
-            Givers = shoes.Givers;
+            Giver = shoes.Giver;
             ConnectedShoes = shoes.ConnectedShoes;
 
             InitMaterialList(materials);
             InitGroupList(groups);
+            InitGiverList(givers);
             InitPlaceList(places);
         }
 
         public long MaterialId { get; set; }
         public long GroupId { get; set; }
+        public long GiverId { get; set; }
         public long PlaceOfBuyingId { get; set; }
         public long PlaceOfProduceId { get; set; }
 
         public List<SelectListItem> MaterialList { get; set; }
         public List<SelectListItem> PlaceList { get; set; }
         public List<SelectListItem> GroupList { get; set; }
+        public List<SelectListItem> GiversList { get; set; }
 
         public void InitMaterialList(List<Material> materials)
         {
@@ -64,6 +75,15 @@ namespace Shoes.Models
                 Text = x.Name,
                 Value = x.Id.ToString(),
                 Selected = Group?.Id == x.Id
+            }).ToList();
+        }
+
+        public void InitGiverList(List<Person> givers)
+        {
+            GiversList = givers?.Select(x => new SelectListItem() {
+                Text = x.LastName + " " + x.FirstName,
+                Value = x.Id.ToString(),
+                Selected = Giver?.Id == x.Id
             }).ToList();
         }
 

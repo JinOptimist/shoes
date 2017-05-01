@@ -26,7 +26,7 @@ namespace Dao
             modelBuilder.Entity<Shoes>().HasOptional(x => x.Group);
             modelBuilder.Entity<Shoes>().HasOptional(x => x.PlaceOfBuying);
             modelBuilder.Entity<Shoes>().HasOptional(x => x.PlaceOfProduce);
-            modelBuilder.Entity<Shoes>().HasMany(x => x.Givers);
+            modelBuilder.Entity<Shoes>().HasOptional(x => x.Giver);
             modelBuilder.Entity<Shoes>().HasMany(x => x.ConnectedShoes);
 
             modelBuilder.Entity<User>();

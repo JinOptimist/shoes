@@ -1,0 +1,100 @@
+﻿@model List<Dao.Model.Person>
+
+@{
+    ViewBag.Title = "Дарители";
+}
+
+<h2>Добавить нового</h2>
+<div class="row">
+    <input type="text" class="form-control last-name" value="" placeholder="Фамилия" />
+    <input type="text" class="form-control first-name" value="" placeholder="Имя" />
+    <input type="button" value="Создать" class="form-control save add" />
+</div>
+
+<h2>Существующие дарители</h2>
+<div class="row">
+    @foreach (var giver in Model) {
+        <div class="col-sm-2 giver-block">
+            <input type="hidden" value="@giver.Id" class="id"/>
+            <input type="text" class="form-control last-name" value="@giver.LastName" />
+            <input type="text" class="form-control first-name" value="@giver.FirstName" />
+            <input type="button" value="Переимновать" class="form-control save col-sm-1" />
+            <input type="button" value="Удалить" class="form-control delete col-sm-1" />
+        </div>
+    }
+</div>
+
+<script>
+    (function () {
+        $(".last-name").change(onTextChange);
+        $(".first-name").change(onTextChange);
+        $(".last-name").keydown(onTextChange);
+        $(".first-name").keydown(onTextChange);
+
+        function onTextChange() {
+            $(this).parent().find(".save").css("background", "#9ee");
+        }
+
+        $(".save").click(function () {
+            var saveButton = $(this);
+            saveButton.attr('disabled', 'disabled');
+            var id = saveButton.parent().find('.id').val();
+            var lastName = saveButton.parent().find('.last-name').val();
+            var firstName = saveButton.parent().find('.first-name').val();
+            savePerson(saveButton, id, lastName, firstName);
+        });
+
+        $(".add").click(function () {
+            var addButton = $(this);
+            addButton.attr('disabled', 'disabled');
+            var lastName = addButton.parent().find('.last-name').val();
+            var firstName = addButton.parent().find('.first-name').val();
+            var reload = function () {
+                location.reload();
+            }
+            savePerson(addButton, 0, lastName, firstName, reload);
+        });
+
+        function savePerson(button, id, lastName, firstName, additinalCallBack) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePerson", "Home")',
+                data: {
+                    id: id,
+                    lastName: lastName,
+                    firstName: firstName,
+                },
+                success: function () {
+                    button.removeAttr('disabled');
+                    button.css("background", "#fff");
+                    if (additinalCallBack)
+                        additinalCallBack();
+                },
+            });
+        }
+
+        $(".delete").click(function () {
+            var button = $(this);
+            button.attr('disabled', 'disabled');
+
+            var id = button.parent().find('.id').val();
+            var giver = button.parent().find('.giver').val();
+            if (!confirm("Вы точно хотите удалить '" + giver + "'?")) {
+                button.removeAttr('disabled');
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemovePerson", "Home")',
+                data: {
+                    id: id,
+                },
+                success: function () {
+                    location.reload();
+                },
+            });
+        });
+
+    })();
+</script>
