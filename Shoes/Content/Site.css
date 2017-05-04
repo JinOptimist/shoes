@@ -82,6 +82,7 @@ textarea {
 
 .shoes-block {
     padding: 10px;
+    border-bottom: 1px dotted #ccc;
 }
 
 .oldIdLvl2{
@@ -92,4 +93,38 @@ textarea {
     max-width: 50%;
     float: left;
     margin: 0 12px 5px 0;
+}
+
+.filters input,
+.filters select {
+    width: 20%
+}
+
+.form-control.size {
+    width: 25%
+}
+
+.size.active {
+    background: #F7FFF3;
+}
+
+.dropdowns-filter.active {
+    background: #F3FFFF;
+}
+
+/*.col-sm-3,
+.col-sm-4,
+.col-sm-6,
+.col-sm-12 {
+    transition: all 100ms;
+}*/
+
+.shoes-block.col-sm-6{
+    height: 200px;
+}
+.shoes-block.col-sm-4 {
+    height: 240px;
+}
+.shoes-block.col-sm-3 {
+    height: 250px;
 }

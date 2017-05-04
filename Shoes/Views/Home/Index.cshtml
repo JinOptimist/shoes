@@ -4,13 +4,14 @@
 }
 
 <div class="page-header">
-    <h1>Полная коллекция @Model.Shoes.Count() шт</h1>
-    <input type="button" class="size" value="Маленькие" id="small"/>
-    <input type="button" class="size" value="Средние"  id="medium"/>
-    <input type="button" class="size" value="Большие"  id="big"/>
-    <input type="button" class="size" value="Целиком" id="full" />
-
+    <h1>Коллекция <span id="selectedCount">@Model.Shoes.Count()/</span>@Model.Shoes.Count() шт </h1>
     <div class="row">
+        <input type="button" class="size form-control col-md-1" value="Маленькие" id="small" />
+        <input type="button" class="size form-control col-sm-1 active" value="Средние" id="medium" />
+        <input type="button" class="size form-control col-sm-1" value="Большие" id="big" />
+        <input type="button" class="size form-control col-sm-1" value="Целиком" id="full" />        
+    </div>
+    <div class="row filters">
         @Html.DropDownListFor(x => x.DropDowns.MaterialId, Model.DropDowns.MaterialList,
                             new {
                                 @class = "form-control col-sm-4 dropdowns-filter",
@@ -34,6 +35,7 @@
                                 data_type = "place"
                             })
         }
+        <input type="button" class="form-control col-sm-1" value="Сбросить" id="refresh" />
     </div>
 </div>
 
@@ -98,13 +100,11 @@
                     }
                     <p>
                         <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
-                    </p>
-                    <p>
+                        /
                         <a href="@Url.Action("Remove", new { id = shoes.Id})">Удалить</a>
                     </p>
                 }
             </div>
-            <hr />
         </div>
         }
     </div>
@@ -113,7 +113,7 @@
 <script>
     (function () {
         $(".dropdowns-filter").change(function () {
-
+            $(".dropdowns-filter").removeClass("active");
             var typeName = $(this).data("type");
             var type = $("." + typeName);
             var first = $(this).find("option:first-child").val();
@@ -122,17 +122,32 @@
             var otherFilters = $(".dropdowns-filter:not([data-type=" + typeName + "])");
             otherFilters.find("option").removeAttr('selected');
             otherFilters.find("option:first").attr('selected', 'selected');
-
-
             if (selectedId == first) {
                 type.parent().show();
             } else {
+                $(this).addClass("active");
                 type.parent().hide();
                 $("." + typeName + "[value=" + selectedId + "]").parent().show();
             }
+
+            var selectedCount = $(".shoes-block:visible ").length;
+            $("#selectedCount").text(selectedCount + "/");
+        });
+
+        $("#refresh").click(function () {
+            $(".dropdowns-filter").removeClass("active");
+            var filters = $(".dropdowns-filter");
+            filters.find("option").removeAttr('selected');
+            filters.find("option:first").attr('selected', 'selected');
+            $(".shoes-block").show();
+
+            var selectedCount = $(".shoes-block:visible ").length;
+            $("#selectedCount").text(selectedCount + "/");
         });
 
         $(".size").click(function () {
+            $(".size").removeClass("active");
+            $(this).addClass("active");            
             var type = $(this).attr("id");
             switch (type) {
                 case "small":
