@@ -80,7 +80,7 @@ textarea {
     background: #ff6666;
 }
 
-.shoes-block{
+.shoes-block {
     padding: 10px;
 }
 
@@ -90,9 +90,6 @@ textarea {
 
 .preview-image {
     max-width: 50%;
-    display: inline-block;
-}
-
-.preview-data {
-    display: inline-block;
+    float: left;
+    margin: 0 12px 5px 0;
 }

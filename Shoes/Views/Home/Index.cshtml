@@ -45,8 +45,8 @@
             <input type="hidden" class="group" value="@shoes.Group.Id" />
             <input type="hidden" class="giver" value="@shoes.Giver.Id" />
             <input type="hidden" class="place" value="@shoes.PlaceOfBuying.Id" />
-            <img src="@shoes.ImageUrl" class="preview-image"/>
             <div class="preview-data">
+                <img src="@shoes.ImageUrl" class="preview-image" />
                 <p>
                     @shoes.Name
                     @if (User.Identity.IsAuthenticated) {
@@ -57,33 +57,45 @@
                         </span>
                     }
                 </p>
+                @if (shoes.Material.Id.ToString() != Model.DropDowns.MaterialList.First().Value) {
                 <p>
-                    Материал: @shoes.Material.Name
+                    <b>Материал</b>: @shoes.Material.Name
                 </p>
-                <p>
-                    Группа: @shoes.Group.Name
-                </p>
+                }
+                @if (shoes.Group.Id.ToString() != Model.DropDowns.GroupList.First().Value) {
+                    <p>
+                        <b>Группа</b>: @shoes.Group.Name
+                    </p>
+                }
                 @if (shoes.DateOfPurchase.HasValue) {
                     <p>
-                        Дата появления в коллекции: @(shoes.DateOfPurchase.Value.Year)
+                        <b>Дата появления в коллекции</b>: @(shoes.DateOfPurchase.Value.Year)
                     </p>
                 }
                 @if (User.Identity.IsAuthenticated) {
-                    <p>
-                        Описание: @shoes.Desc
-                    </p>
-                    <p>
-                        Размер: @shoes.Width * @shoes.Height
-                    </p>
-                    <p>
-                        Место покупки: @shoes.PlaceOfBuying.CountryName
-                            @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
-                                ? string.Empty
-                                : shoes.PlaceOfBuying.CityName)
-                    </p>
-                    <p>
-                        Даритель: @shoes.Giver.LastName @shoes.Giver.FirstName
-                    </p>
+                    if (!string.IsNullOrWhiteSpace(shoes.Desc)) {
+                        <p>
+                            <b>Описание</b>: @shoes.Desc
+                        </p>
+                    }
+                    if (shoes.Width != 1 || shoes.Height != 1) {
+                        <p>
+                            <b>Размер</b>: @shoes.Width * @shoes.Height
+                        </p>
+                    }
+                    if (shoes.PlaceOfBuying.Id.ToString() != Model.DropDowns.PlaceOfBuyingList.First().Value) {
+                        <p>
+                            <b>Место покупки</b>: @shoes.PlaceOfBuying.CountryName
+                                @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
+                                    ? string.Empty
+                                    : shoes.PlaceOfBuying.CityName)
+                        </p>
+                    }
+                    if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
+                        <p>
+                            <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
+                        </p>
+                    }
                     <p>
                         <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
                     </p>
