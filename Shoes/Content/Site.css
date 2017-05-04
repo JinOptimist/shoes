@@ -87,3 +87,12 @@ textarea {
 .oldIdLvl2{
     visibility: hidden;
 }
+
+.preview-image {
+    max-width: 50%;
+    display: inline-block;
+}
+
+.preview-data {
+    display: inline-block;
+}

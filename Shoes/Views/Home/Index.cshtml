@@ -1,22 +1,52 @@
-﻿@model IEnumerable<Dao.Model.Shoes>
+﻿@model Shoes.Models.IndexViewModel
 @{
     ViewBag.Title = "Коллекция";
 }
 
 <div class="page-header">
-    <h1>Полная коллекция @Model.Count() шт</h1>
+    <h1>Полная коллекция @Model.Shoes.Count() шт</h1>
     <input type="button" class="size" value="Маленькие" id="small"/>
     <input type="button" class="size" value="Средние"  id="medium"/>
     <input type="button" class="size" value="Большие"  id="big"/>
     <input type="button" class="size" value="Целиком" id="full" />
+
+    <div class="row">
+        @Html.DropDownListFor(x => x.DropDowns.MaterialId, Model.DropDowns.MaterialList,
+                            new {
+                                @class = "form-control col-sm-4 dropdowns-filter",
+                                data_type = "material"
+                            })
+        @Html.DropDownListFor(x => x.DropDowns.GroupId, Model.DropDowns.GroupList,
+                            new {
+                                @class = "form-control col-sm-4 dropdowns-filter",
+                                data_type = "group"
+                            })
+
+        @if (User.Identity.IsAuthenticated) {
+            @Html.DropDownListFor(x => x.DropDowns.GiverId, Model.DropDowns.GiversList,
+                            new {
+                                @class = "form-control col-sm-4 dropdowns-filter",
+                                data_type = "giver"
+                            })
+            @Html.DropDownListFor(x => x.DropDowns.PlaceOfBuyingId, Model.DropDowns.PlaceOfBuyingList,
+                            new {
+                                @class = "form-control col-sm-4 dropdowns-filter",
+                                data_type = "place"
+                            })
+        }
+    </div>
 </div>
 
-@if (Model != null) {
+@if (Model.Shoes != null) {
     <div class="row">
-        @foreach (var shoes in Model.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
+        @foreach (var shoes in Model.Shoes.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
         <div class="col-sm-4 shoes-block">
-            <img src="@shoes.ImageUrl" class="col-sm-6"/>
-            <div class="col-sm-6">
+            <input type="hidden" class="material" value="@shoes.Material.Id" />
+            <input type="hidden" class="group" value="@shoes.Group.Id" />
+            <input type="hidden" class="giver" value="@shoes.Giver.Id" />
+            <input type="hidden" class="place" value="@shoes.PlaceOfBuying.Id" />
+            <img src="@shoes.ImageUrl" class="preview-image"/>
+            <div class="preview-data">
                 <p>
                     @shoes.Name
                     @if (User.Identity.IsAuthenticated) {
@@ -70,6 +100,26 @@
 
 <script>
     (function () {
+        $(".dropdowns-filter").change(function () {
+
+            var typeName = $(this).data("type");
+            var type = $("." + typeName);
+            var first = $(this).find("option:first-child").val();
+            var selectedId = $(this).val();
+
+            var otherFilters = $(".dropdowns-filter:not([data-type=" + typeName + "])");
+            otherFilters.find("option").removeAttr('selected');
+            otherFilters.find("option:first").attr('selected', 'selected');
+
+
+            if (selectedId == first) {
+                type.parent().show();
+            } else {
+                type.parent().hide();
+                $("." + typeName + "[value=" + selectedId + "]").parent().show();
+            }
+        });
+
         $(".size").click(function () {
             var type = $(this).attr("id");
             switch (type) {

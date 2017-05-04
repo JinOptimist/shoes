@@ -56,24 +56,21 @@
                 @Html.TextAreaFor(x => x.Desc, new { @class = "form-control", placeholder = "Описание" })
             </div>
             <div class="form-group row">
-                <label for="Desc">Материал:</label>
-                @Html.DropDownListFor(x => x.MaterialId, Model.MaterialList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.DropDowns.MaterialId, Model.DropDowns.MaterialList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
-                <label for="Desc">Группа:</label>
-                @Html.DropDownListFor(x => x.GroupId, Model.GroupList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.DropDowns.GroupId, Model.DropDowns.GroupList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
-                <label for="Desc">Даритель:</label>
-                @Html.DropDownListFor(x => x.GiverId, Model.GiversList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.DropDowns.GiverId, Model.DropDowns.GiversList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
                 <label for="PlaceOfBuying">Место приобретение:</label>
-                @Html.DropDownListFor(x => x.PlaceOfBuyingId, Model.PlaceList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.DropDowns.PlaceOfBuyingId, Model.DropDowns.PlaceOfBuyingList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
                 <label for="PlaceOfProduce">Место создания:</label>
-                @Html.DropDownListFor(x => x.PlaceOfProduceId, Model.PlaceList, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.DropDowns.PlaceOfProduceId, Model.DropDowns.PlaceOfProduceList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
                 <label for="DateOfPurchase">Дата приобретение:</label>

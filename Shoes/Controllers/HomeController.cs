@@ -38,8 +38,13 @@ namespace Shoes.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
-            var models = ShoesRepository.GetAll().OrderBy(x => x.OldIdLvl2).OrderBy(x => x.OldId);
-            return View(models);
+            var shoes = ShoesRepository.GetAll().OrderBy(x => x.OldIdLvl2).OrderBy(x => x.OldId).ToList();
+            var materials = MaterialRepository.GetAll();
+            var groups = GroupRepository.GetAll();
+            var places = PlaceRepository.GetAll();
+            var givers = PersonRepository.GetAll();
+            var viewModel = new IndexViewModel(shoes, materials, groups, places, givers);
+            return View(viewModel);
         }
 
         [AllowAnonymous]
@@ -112,11 +117,11 @@ namespace Shoes.Controllers
                 if (shoes == null)
                     shoes = new ShoesModel();
                 shoesViewModel.UpdateModel(shoes);
-                shoes.Material = MaterialRepository.Get(shoesViewModel.MaterialId);
-                shoes.Group = GroupRepository.Get(shoesViewModel.GroupId);
-                shoes.PlaceOfBuying = PlaceRepository.Get(shoesViewModel.PlaceOfBuyingId);
-                shoes.PlaceOfProduce = PlaceRepository.Get(shoesViewModel.PlaceOfProduceId);
-                shoes.Giver = PersonRepository.Get(shoesViewModel.GiverId);
+                shoes.Material = MaterialRepository.Get(shoesViewModel.DropDowns.MaterialId);
+                shoes.Group = GroupRepository.Get(shoesViewModel.DropDowns.GroupId);                
+                shoes.Giver = PersonRepository.Get(shoesViewModel.DropDowns.GiverId);
+                shoes.PlaceOfBuying = PlaceRepository.Get(shoesViewModel.DropDowns.PlaceOfBuyingId);
+                shoes.PlaceOfProduce = PlaceRepository.Get(shoesViewModel.DropDowns.PlaceOfProduceId);
 
                 shoes = ShoesRepository.Save(shoes);
                 if (Request.Files.Count > 0) {
@@ -136,10 +141,7 @@ namespace Shoes.Controllers
             var groups = GroupRepository.GetAll();
             var places = PlaceRepository.GetAll();
             var givers = PersonRepository.GetAll();
-            shoesViewModel.InitMaterialList(materials);
-            shoesViewModel.InitGroupList(groups);
-            shoesViewModel.InitPlaceList(places);
-            shoesViewModel.InitGiverList(givers);
+            shoesViewModel.DropDowns = new ListOfDropDown(materials, groups, places, givers, shoesViewModel);
 
             return View(shoesViewModel);
         }
