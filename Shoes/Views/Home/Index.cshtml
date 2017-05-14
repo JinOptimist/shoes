@@ -69,9 +69,9 @@
                         <b>Группа</b>: @shoes.Group.Name
                     </p>
                 }
-                @if (shoes.DateOfPurchase.HasValue) {
+                @if (shoes.YearOfPurchase.HasValue) {
                     <p>
-                        <b>Дата появления в коллекции</b>: @(shoes.DateOfPurchase.Value.Year)
+                        <b>Дата появления в коллекции</b>: @shoes.YearOfPurchase
                     </p>
                 }
                 @if (User.Identity.IsAuthenticated) {
@@ -101,7 +101,7 @@
                     <p>
                         <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
                         /
-                        <a href="@Url.Action("Remove", new { id = shoes.Id})">Удалить</a>
+                        <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
                     </p>
                 }
             </div>
@@ -112,6 +112,12 @@
 
 <script>
     (function () {
+        $(".remove").click(function () {
+            if (!confirm("Вы уверены что хотите удалить туфельку?")) {
+                return false;
+            }
+        });
+
         $(".dropdowns-filter").change(function () {
             $(".dropdowns-filter").removeClass("active");
             var typeName = $(this).data("type");

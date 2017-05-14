@@ -24,9 +24,11 @@ namespace Dao.Model
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateOfCreating { get; set; }
+        public int? YearOfCreating { get; set; }
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateOfPurchase { get; set; }
+        public int? YearOfPurchase { get; set; }
         public int NumberOfDuplication { get; set; }
         public bool IsPublic { get; set; }
 

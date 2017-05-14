@@ -106,6 +106,10 @@
     <Compile Include="Migrations\201705011534282_onlyOneGiver.Designer.cs">
       <DependentUpon>201705011534282_onlyOneGiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705141831257_AddYearOnlyField.cs" />
+    <Compile Include="Migrations\201705141831257_AddYearOnlyField.Designer.cs">
+      <DependentUpon>201705141831257_AddYearOnlyField.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationsConfiguration.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Person.cs" />
@@ -177,6 +181,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705011534282_onlyOneGiver.resx">
       <DependentUpon>201705011534282_onlyOneGiver.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705141831257_AddYearOnlyField.resx">
+      <DependentUpon>201705141831257_AddYearOnlyField.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

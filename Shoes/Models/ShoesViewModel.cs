@@ -38,9 +38,15 @@ namespace Shoes.Models
             ConnectedShoes = shoes.ConnectedShoes;
 
             DropDowns = new ListOfDropDown(materials, groups, places, givers, shoes);
+
+            DateOfPurchaseHasFullValue = shoes.DateOfPurchase.HasValue;
+            DateOfCreatingHasFullValue = shoes.DateOfCreating.HasValue;
         }
 
         public ListOfDropDown DropDowns { get; set; }
+
+        public bool DateOfPurchaseHasFullValue { get; set; }
+        public bool DateOfCreatingHasFullValue { get; set; }
 
         public void UpdateModel(Dao.Model.Shoes dbShoes)
         {
@@ -53,8 +59,10 @@ namespace Shoes.Models
             dbShoes.Desc = Desc;
             dbShoes.Notation = Notation;
             dbShoes.ImageUrl = ImageUrl;
-            dbShoes.DateOfCreating = DateOfCreating;
             dbShoes.DateOfPurchase = DateOfPurchase;
+            dbShoes.YearOfPurchase = YearOfPurchase;
+            dbShoes.DateOfCreating = DateOfCreating;
+            dbShoes.YearOfCreating = YearOfCreating;            
             dbShoes.NumberOfDuplication = NumberOfDuplication;
             dbShoes.IsPublic = IsPublic;
         }

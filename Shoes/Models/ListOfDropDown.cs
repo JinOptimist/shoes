@@ -1,4 +1,5 @@
 ﻿using Dao.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -25,6 +26,9 @@ namespace Shoes.Models
             InitGroupList(groups);
             InitGiverList(givers);
             InitPlaceList(places);
+
+            YearsOfPurchase = GenerateYears(shoes?.YearOfPurchase);
+            YearsOfCreating = GenerateYears(shoes?.YearOfCreating);
         }
 
         public List<SelectListItem> MaterialList { get; set; }
@@ -32,6 +36,8 @@ namespace Shoes.Models
         public List<SelectListItem> GiversList { get; set; }
         public List<SelectListItem> PlaceOfBuyingList { get; set; }
         public List<SelectListItem> PlaceOfProduceList { get; set; }
+        public List<SelectListItem> YearsOfPurchase { get; set; }
+        public List<SelectListItem> YearsOfCreating { get; set; }
 
         public long MaterialId { get; set; }
         public long GroupId { get; set; }
@@ -85,6 +91,25 @@ namespace Shoes.Models
                 Value = x.Id.ToString(),
                 Selected = PlaceOfProduceId == x.Id
             }).ToList();
+        }
+
+        private List<SelectListItem> GenerateYears(int? selectedValue)
+        {
+            var years = new List<SelectListItem>();
+            years.Add(new SelectListItem {
+                Text = "- Год -",
+                Value = string.Empty,
+                Selected = selectedValue == null
+            });
+
+            for (var i = DateTime.Now.Year; i >= 1700; i--) {
+                years.Add(new SelectListItem {
+                    Text = i.ToString(),
+                    Value = i.ToString(),
+                    Selected = selectedValue == i
+                });
+            }
+            return years;
         }
     }
 }

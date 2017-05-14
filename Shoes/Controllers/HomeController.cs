@@ -123,6 +123,17 @@ namespace Shoes.Controllers
                 shoes.PlaceOfBuying = PlaceRepository.Get(shoesViewModel.DropDowns.PlaceOfBuyingId);
                 shoes.PlaceOfProduce = PlaceRepository.Get(shoesViewModel.DropDowns.PlaceOfProduceId);
 
+                if (shoesViewModel.DateOfPurchaseHasFullValue) {
+                    shoes.YearOfPurchase = shoes.DateOfPurchase?.Year;                    
+                } else {
+                    shoes.DateOfPurchase = null;
+                }
+                if (shoesViewModel.DateOfCreatingHasFullValue) {
+                    shoes.YearOfCreating = shoes.DateOfCreating?.Year;
+                } else {
+                    shoes.DateOfCreating = null;
+                }
+
                 shoes = ShoesRepository.Save(shoes);
                 if (Request.Files.Count > 0) {
                     var file = Request.Files[0];
@@ -325,6 +336,18 @@ namespace Shoes.Controllers
             MaterialRepository.Save(materials);
 
             return RedirectToAction("Index");
+        }
+
+        public JsonResult UpdateYear()
+        {
+            var shoeses = ShoesRepository.GetAll();
+            foreach(var shoes in shoeses) {
+                shoes.YearOfCreating = shoes.DateOfCreating?.Year;
+                shoes.YearOfPurchase = shoes.DateOfPurchase?.Year;
+            }
+
+            ShoesRepository.Save(shoeses);
+            return Json(true, JsonRequestBehavior.AllowGet);
         }
 
         private string GetPathToImg(string fileName)

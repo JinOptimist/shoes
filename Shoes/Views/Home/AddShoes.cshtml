@@ -12,6 +12,7 @@
     <div class="row">
         @Html.HiddenFor(x => x.Id)
         @Html.HiddenFor(x => x.ImageUrl)
+
         @Html.ValidationSummary()
         <div class="col-sm-6">
             <div class="form-group row">
@@ -72,13 +73,32 @@
                 <label for="PlaceOfProduce">Место создания:</label>
                 @Html.DropDownListFor(x => x.DropDowns.PlaceOfProduceId, Model.DropDowns.PlaceOfProduceList, new { @class = "form-control" })
             </div>
-            <div class="form-group row">
-                <label for="DateOfPurchase">Дата приобретение:</label>
-                <input type="date" id="DateOfPurchase" name="DateOfPurchase" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfPurchase)" class="form-control" />
+
+            <div class="form-group date-purchase">
+                <label class="row" for="PlaceOfProduce">Приобретён:</label>
+                <div class="row">
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.YearOfPurchase, Model.DropDowns.YearsOfPurchase, new { @class = "form-control short-date" })
+                        <input type="date" id="DateOfPurchase" name="DateOfPurchase" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfPurchase)" class="form-control full-date" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Точней" class="form-control switch-date" />
+                        @Html.HiddenFor(x => x.DateOfPurchaseHasFullValue)
+                    </div>
+                </div>
             </div>
-            <div class="form-group row">
-                <label for="DateOfCreating">Дата создания:</label>
-                <input type="date" id="DateOfCreating" name="DateOfCreating" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfCreating)" class="form-control" />
+            <div class="form-group date-create">
+                <label class="row" for="PlaceOfProduce">Создан:</label>
+                <div class="row">
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(x => x.YearOfCreating, Model.DropDowns.YearsOfCreating, new { @class = "form-control short-date" })
+                        <input type="date" id="DateOfCreating" name="DateOfCreating" value="@string.Format("{0:yyyy-MM-dd}", Model.DateOfCreating)" class="form-control full-date" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Точней" class="form-control switch-date" />
+                        @Html.HiddenFor(x => x.DateOfCreatingHasFullValue)
+                    </div>
+                </div>                
             </div>
             <div class="form-group row">
                 <label for="IsPublic">Виден всем:</label>
@@ -101,8 +121,41 @@
 
 <script>
     (function () {
+        init();
+
         $("#openLvl2").click(function () {
             $(".oldIdLvl2").css("visibility", "visible");
         });
+
+        $(".switch-date").click(function () {
+            $(this).parent().parent().find(".short-date").toggle();
+            $(this).parent().parent().find(".full-date").toggle();
+
+            var hasFullValueInput = $(this).parent().find("input[type=hidden]");
+            // work with .net format of boolean
+            var hasFullValue = hasFullValueInput.val() == "False";
+            hasFullValueInput.val(hasFullValue ? "True" : "False");
+            $(this).val(hasFullValue ? "Год" : "Точней");
+        });
+
+        function init() {
+            var datePurchaseBlock = $(".date-purchase");
+            var dateOfPurchaseHasValue = @Model.DateOfPurchaseHasFullValue.ToString().ToLower();
+            dateInit(datePurchaseBlock, dateOfPurchaseHasValue);
+
+            var dateCreateBlock = $(".date-create");
+            var dateOfCreatingHasValue = @Model.DateOfCreatingHasFullValue.ToString().ToLower();
+            dateInit(dateCreateBlock, dateOfCreatingHasValue);
+        }
+
+        function dateInit(dateBlock, hasFullValue) {
+            if (hasFullValue) {
+                dateBlock.find(".short-date").hide();
+            } else {
+                dateBlock.find(".full-date").hide();
+            }
+
+            dateBlock.find(".switch-date").val(hasFullValue ? "Год" : "Точней");
+        }
     })()
 </script>
