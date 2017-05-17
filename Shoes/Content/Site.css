@@ -93,6 +93,7 @@ textarea {
     max-width: 50%;
     float: left;
     margin: 0 12px 5px 0;
+    cursor: pointer;
 }
 
 .filters input,
@@ -127,4 +128,8 @@ textarea {
 }
 .shoes-block.col-sm-3 {
     height: 250px;
+}
+
+.modal-title {
+    display: inline-block;
 }

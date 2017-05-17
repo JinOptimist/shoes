@@ -9,7 +9,7 @@
         <input type="button" class="size form-control col-md-1" value="Маленькие" id="small" />
         <input type="button" class="size form-control col-sm-1 active" value="Средние" id="medium" />
         <input type="button" class="size form-control col-sm-1" value="Большие" id="big" />
-        <input type="button" class="size form-control col-sm-1" value="Целиком" id="full" />        
+        <input type="button" class="size form-control col-sm-1" value="Целиком" id="full" />
     </div>
     <div class="row filters">
         @Html.DropDownListFor(x => x.DropDowns.MaterialId, Model.DropDowns.MaterialList,
@@ -42,74 +42,75 @@
 @if (Model.Shoes != null) {
     <div class="row">
         @foreach (var shoes in Model.Shoes.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
-        <div class="col-sm-4 shoes-block">
-            <input type="hidden" class="material" value="@shoes.Material.Id" />
-            <input type="hidden" class="group" value="@shoes.Group.Id" />
-            <input type="hidden" class="giver" value="@shoes.Giver.Id" />
-            <input type="hidden" class="place" value="@shoes.PlaceOfBuying.Id" />
-            <div class="preview-data">
-                <img src="@shoes.ImageUrl" class="preview-image" data-name="@shoes.Name" 
-                     data-old-id-common="@shoes.OldId"
-                     data-old-id="@(shoes.OldId + (shoes.OldIdLvl2 != 0
+            <div class="col-sm-4 shoes-block" > @*style="display: @(shoes.OldIdLvl2 < 2 ? "" : "none")"*@
+                <input type="hidden" class="material" value="@shoes.Material.Id" />
+                <input type="hidden" class="group" value="@shoes.Group.Id" />
+                <input type="hidden" class="giver" value="@shoes.Giver.Id" />
+                <input type="hidden" class="place" value="@shoes.PlaceOfBuying.Id" />
+                <div class="preview-data">
+                    <img src="@shoes.ImageUrl" class="preview-image" data-name="@shoes.Name"
+                         data-real-id="@shoes.Id"
+                         data-old-id-common="@shoes.OldId"
+                         data-old-id="@(shoes.OldId + (shoes.OldIdLvl2 != 0
                             ? "." + shoes.OldIdLvl2
                             : string.Empty))" />
-                <p>
-                    @shoes.Name
-                    @if (User.Identity.IsAuthenticated) {
-                        <span>
-                            №@(shoes.OldId + (shoes.OldIdLvl2 != 0
+                    <p>
+                        @shoes.Name
+                        @if (User.Identity.IsAuthenticated) {
+                            <span>
+                                №@(shoes.OldId + (shoes.OldIdLvl2 != 0
                             ? "." + shoes.OldIdLvl2
                             : string.Empty))
-                        </span>
-                    }
-                </p>
-                @if (shoes.Material.Id.ToString() != Model.DropDowns.MaterialList.First().Value) {
-                    <p>
-                        <b>Материал</b>: @shoes.Material.Name
+                            </span>
+                        }
                     </p>
-                }
-                @if (shoes.Group.Id.ToString() != Model.DropDowns.GroupList.First().Value) {
-                    <p>
-                        <b>Группа</b>: @shoes.Group.Name
-                    </p>
-                }
-                @if (shoes.YearOfPurchase.HasValue) {
-                    <p>
-                        <b>Дата появления в коллекции</b>: @shoes.YearOfPurchase
-                    </p>
-                }
-                @if (User.Identity.IsAuthenticated) {
-                    if (!string.IsNullOrWhiteSpace(shoes.Desc)) {
+                    @if (shoes.Material.Id.ToString() != Model.DropDowns.MaterialList.First().Value) {
                         <p>
-                            <b>Описание</b>: @shoes.Desc
+                            <b>Материал</b>: @shoes.Material.Name
                         </p>
                     }
-                    if (shoes.Width != 1 || shoes.Height != 1) {
+                    @if (shoes.Group.Id.ToString() != Model.DropDowns.GroupList.First().Value) {
                         <p>
-                            <b>Размер</b>: @shoes.Width * @shoes.Height
+                            <b>Группа</b>: @shoes.Group.Name
                         </p>
                     }
-                    if (shoes.PlaceOfBuying.Id.ToString() != Model.DropDowns.PlaceOfBuyingList.First().Value) {
+                    @if (shoes.YearOfPurchase.HasValue) {
                         <p>
-                            <b>Место покупки</b>: @shoes.PlaceOfBuying.CountryName
+                            <b>Дата появления в коллекции</b>: @shoes.YearOfPurchase
+                        </p>
+                    }
+                    @if (User.Identity.IsAuthenticated) {
+                        if (!string.IsNullOrWhiteSpace(shoes.Desc)) {
+                            <p>
+                                <b>Описание</b>: @shoes.Desc
+                            </p>
+                        }
+                        if (shoes.Width != 1 || shoes.Height != 1) {
+                            <p>
+                                <b>Размер</b>: @shoes.Width * @shoes.Height
+                            </p>
+                        }
+                        if (shoes.PlaceOfBuying.Id.ToString() != Model.DropDowns.PlaceOfBuyingList.First().Value) {
+                            <p>
+                                <b>Место покупки</b>: @shoes.PlaceOfBuying.CountryName
                                 @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
                                     ? string.Empty
                                     : shoes.PlaceOfBuying.CityName)
-                        </p>
-                    }
-                    if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
+                            </p>
+                        }
+                        if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
+                            <p>
+                                <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
+                            </p>
+                        }
                         <p>
-                            <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
+                            <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
+                            /
+                            <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
                         </p>
                     }
-                    <p>
-                        <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
-                        /
-                        <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
-                    </p>
-                }
+                </div>
             </div>
-        </div>
         }
     </div>
     <!-- Popup -->
@@ -127,18 +128,14 @@
                     <div id="myCarousel" class="carousel slide" data-ride="carousel">
                         <!-- Indicators -->
                         <ol class="carousel-indicators">
-                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                            <li data-target="#myCarousel" data-slide-to="1"></li>
+                            @*<li data-target="#myCarousel" data-slide-to="0" class="active"></li>*@                            
                         </ol>
 
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner">
-                            <div class="item active">
+                            @*<div class="item active">
                                 <img src="/Content/img/30024.jpg" />
-                            </div>
-                            <div class="item">
-                                <img src="/Content/img/30023.jpg" />
-                            </div>
+                            </div>*@
                         </div>
 
                         <!-- Left and right controls -->
@@ -167,20 +164,32 @@
 
 <script>
     (function () {
+        init();
+
         $(".preview-image").click(function () {
             $("#myModal").modal();
 
             var oldIdCommon = $(this).data("old-id-common");
-            var a = $("[old-id-common=" + oldIdCommon + "]");
+            var images = $("[data-old-id-common=" + oldIdCommon + "]").map(function (index, img) {
+                return $(img);
+            });
 
-            var currentUrl = $(this).attr("src");
-            var oldId = $(this).data("old-id");
             var title = $(this).data("name");
-            if (oldId){
-                title = title + " №" + oldId;
+            if (images.length > 0) {
+                title = title + " №" + oldIdCommon;
             }
-            $("#preview-img").attr("src", currentUrl);
             $(".modal-title").text(title);
+
+            $(".carousel-inner").empty();
+            $(".carousel-indicators").empty();
+            var isActiveClass = '';
+            for (var i = 0; i < images.length; i++) {
+                isActiveClass = i == 0 ? 'active' : '';
+                $(".carousel-inner").append("<div class='item " + isActiveClass + "'><img src='" + images[i].attr("src") + "' /></div>");
+                $(".carousel-indicators").append("<li class='" + isActiveClass+"' data-target='#myCarousel' data-slide-to='" + i + "'></li>");
+            }
+            
+            initCarousel();
         });
 
         $(".remove").click(function () {
@@ -224,7 +233,7 @@
 
         $(".size").click(function () {
             $(".size").removeClass("active");
-            $(this).addClass("active");            
+            $(this).addClass("active");
             var type = $(this).attr("id");
             switch (type) {
                 case "small":
@@ -244,13 +253,24 @@
                     $(".shoes-block").addClass("col-sm-12");
                     break;
             }
-            });
+        });
+
+        function init() {
+            initCarousel();
+        }
 
         function clear() {
             $(".shoes-block").removeClass("col-sm-3");
             $(".shoes-block").removeClass("col-sm-4");
             $(".shoes-block").removeClass("col-sm-6");
             $(".shoes-block").removeClass("col-sm-12");
+        }
+
+        function initCarousel() {
+            $('#myCarousel').carousel({
+                pause: true,
+                interval: false
+            }).carousel(0);
         }
     })();
 </script>
