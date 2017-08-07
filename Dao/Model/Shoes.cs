@@ -34,7 +34,6 @@ namespace Dao.Model
 
         public virtual Material Material { get; set; }
         public virtual Group Group { get; set; }
-        public virtual Place PlaceOfProduce { get; set; }
         public virtual Place PlaceOfBuying { get; set; }
 
         public virtual Person Giver { get; set; }

@@ -38,7 +38,8 @@ namespace Shoes.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
-            var shoes = ShoesRepository.GetAll().OrderBy(x => x.OldIdLvl2).OrderBy(x => x.OldId).ToList();
+            var shoes = ShoesRepository.GetAll().Where(x => x.IsPublic || User.Identity.IsAuthenticated)
+                .OrderBy(x => x.OldIdLvl2).OrderBy(x => x.OldId).ToList();
             var materials = MaterialRepository.GetAll();
             var groups = GroupRepository.GetAll();
             var places = PlaceRepository.GetAll();
@@ -121,7 +122,6 @@ namespace Shoes.Controllers
                 shoes.Group = GroupRepository.Get(shoesViewModel.DropDowns.GroupId);                
                 shoes.Giver = PersonRepository.Get(shoesViewModel.DropDowns.GiverId);
                 shoes.PlaceOfBuying = PlaceRepository.Get(shoesViewModel.DropDowns.PlaceOfBuyingId);
-                shoes.PlaceOfProduce = PlaceRepository.Get(shoesViewModel.DropDowns.PlaceOfProduceId);
 
                 if (shoesViewModel.DateOfPurchaseHasFullValue) {
                     shoes.YearOfPurchase = shoes.DateOfPurchase?.Year;                    

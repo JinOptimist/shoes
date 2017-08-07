@@ -10,17 +10,16 @@ namespace Shoes.Models
     {
         public ListOfDropDown() { }
 
-        public ListOfDropDown(List<Material> materials,
-                                List<Group> groups,
-                                List<Place> places,
-                                List<Person> givers,
+        public ListOfDropDown(IEnumerable<Material> materials,
+                                IEnumerable<Group> groups,
+                                IEnumerable<Place> places,
+                                IEnumerable<Person> givers,
                                 Dao.Model.Shoes shoes)
         {
             MaterialId = shoes?.Material?.Id ?? 0;
             GroupId = shoes?.Group?.Id ?? 0;
             GiverId = shoes?.Giver?.Id ?? 0;
             PlaceOfBuyingId = shoes?.PlaceOfBuying?.Id ?? 0;
-            PlaceOfProduceId = shoes?.PlaceOfProduce?.Id ?? 0;
 
             InitMaterialList(materials);
             InitGroupList(groups);
@@ -35,7 +34,6 @@ namespace Shoes.Models
         public List<SelectListItem> GroupList { get; set; }
         public List<SelectListItem> GiversList { get; set; }
         public List<SelectListItem> PlaceOfBuyingList { get; set; }
-        public List<SelectListItem> PlaceOfProduceList { get; set; }
         public List<SelectListItem> YearsOfPurchase { get; set; }
         public List<SelectListItem> YearsOfCreating { get; set; }
 
@@ -43,9 +41,8 @@ namespace Shoes.Models
         public long GroupId { get; set; }
         public long GiverId { get; set; }
         public long PlaceOfBuyingId { get; set; }
-        public long PlaceOfProduceId { get; set; }
 
-        public void InitMaterialList(List<Material> materials)
+        public void InitMaterialList(IEnumerable<Material> materials)
         {
             MaterialList = materials?.Select(x => new SelectListItem() {
                 Text = x.Name,
@@ -54,7 +51,7 @@ namespace Shoes.Models
             }).ToList();
         }
 
-        public void InitGroupList(List<Group> groups)
+        public void InitGroupList(IEnumerable<Group> groups)
         {
             GroupList = groups?.Select(x => new SelectListItem() {
                 Text = x.Name,
@@ -63,7 +60,7 @@ namespace Shoes.Models
             }).ToList();
         }
 
-        public void InitGiverList(List<Person> givers)
+        public void InitGiverList(IEnumerable<Person> givers)
         {
             GiversList = givers?.Select(x => new SelectListItem() {
                 Text = x.LastName + " " + x.FirstName,
@@ -72,7 +69,7 @@ namespace Shoes.Models
             }).ToList();
         }
 
-        public void InitPlaceList(List<Place> places)
+        public void InitPlaceList(IEnumerable<Place> places)
         {
             var groups = places.Select(x => x.CountryName).Distinct().Select(
                 x => new SelectListGroup {
@@ -83,13 +80,6 @@ namespace Shoes.Models
                 Text = x.CountryName + " " + x.CityName,
                 Value = x.Id.ToString(),
                 Selected = PlaceOfBuyingId == x.Id
-            }).ToList();
-
-            PlaceOfProduceList = places?.Select(x => new SelectListItem() {
-                Group = groups.FirstOrDefault(gr => gr.Name == x.CountryName),
-                Text = x.CountryName + " " + x.CityName,
-                Value = x.Id.ToString(),
-                Selected = PlaceOfProduceId == x.Id
             }).ToList();
         }
 

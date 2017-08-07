@@ -33,7 +33,6 @@ namespace Shoes.Models
             Group = shoes.Group;
             Giver = shoes.Giver;
             PlaceOfBuying = shoes.PlaceOfBuying;
-            PlaceOfProduce = shoes.PlaceOfProduce;            
 
             ConnectedShoes = shoes.ConnectedShoes;
 

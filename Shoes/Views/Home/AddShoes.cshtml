@@ -66,12 +66,8 @@
                 @Html.DropDownListFor(x => x.DropDowns.GiverId, Model.DropDowns.GiversList, new { @class = "form-control" })
             </div>
             <div class="form-group row">
-                <label for="PlaceOfBuying">Место приобретение:</label>
+                <label for="PlaceOfBuying">Происхождение:</label>
                 @Html.DropDownListFor(x => x.DropDowns.PlaceOfBuyingId, Model.DropDowns.PlaceOfBuyingList, new { @class = "form-control" })
-            </div>
-            <div class="form-group row">
-                <label for="PlaceOfProduce">Место создания:</label>
-                @Html.DropDownListFor(x => x.DropDowns.PlaceOfProduceId, Model.DropDowns.PlaceOfProduceList, new { @class = "form-control" })
             </div>
 
             <div class="form-group date-purchase">
@@ -98,7 +94,7 @@
                         <input type="button" value="Точней" class="form-control switch-date" />
                         @Html.HiddenFor(x => x.DateOfCreatingHasFullValue)
                     </div>
-                </div>                
+                </div>
             </div>
             <div class="form-group row">
                 <label for="IsPublic">Виден всем:</label>
@@ -112,7 +108,7 @@
                 @Html.TextAreaFor(x => x.Notation, new { @class = "form-control", placeholder = "Примечания" })
             </div>
             <div class="form-group row">
-                <input type="submit" value="@(isNew ? "Создать" :"Редактировать") " class="form-control" />
+                <input type="submit" value="@(isNew ? "Создать" : "Сохранить") " class="form-control" />
             </div>
         </div>
         <img class="col-sm-6" id="preview" src="@Model.ImageUrl" />

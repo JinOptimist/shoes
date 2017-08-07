@@ -54,21 +54,23 @@
                          data-old-id="@(shoes.OldId + (shoes.OldIdLvl2 != 0
                             ? "." + shoes.OldIdLvl2
                             : string.Empty))" />
+                    @if (User.Identity.IsAuthenticated) {
+                        <p>
+                            <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
+                            /
+                            <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
+                        </p>
+                    }
                     <p>
                         @shoes.Name
                         @if (User.Identity.IsAuthenticated) {
                             <span>
-                                №@(shoes.OldId + (shoes.OldIdLvl2 != 0
-                            ? "." + shoes.OldIdLvl2
-                            : string.Empty))
+                                @(shoes.OldId + (shoes.OldIdLvl2 != 0
+                                    ? "." + shoes.OldIdLvl2
+                                    : string.Empty))
                             </span>
                         }
                     </p>
-                    @if (shoes.Material.Id.ToString() != Model.DropDowns.MaterialList.First().Value) {
-                        <p>
-                            <b>Материал</b>: @shoes.Material.Name
-                        </p>
-                    }
                     @if (shoes.Group.Id.ToString() != Model.DropDowns.GroupList.First().Value) {
                         <p>
                             <b>Группа</b>: @shoes.Group.Name
@@ -79,35 +81,10 @@
                             <b>Дата появления в коллекции</b>: @shoes.YearOfPurchase
                         </p>
                     }
-                    @if (User.Identity.IsAuthenticated) {
-                        if (!string.IsNullOrWhiteSpace(shoes.Desc)) {
-                            <p>
-                                <b>Описание</b>: @shoes.Desc
-                            </p>
-                        }
-                        if (shoes.Width != 1 || shoes.Height != 1) {
-                            <p>
-                                <b>Размер</b>: @shoes.Width * @shoes.Height
-                            </p>
-                        }
-                        if (shoes.PlaceOfBuying.Id.ToString() != Model.DropDowns.PlaceOfBuyingList.First().Value) {
-                            <p>
-                                <b>Место покупки</b>: @shoes.PlaceOfBuying.CountryName
-                                @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
-                                    ? string.Empty
-                                    : shoes.PlaceOfBuying.CityName)
-                            </p>
-                        }
-                        if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
-                            <p>
-                                <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
-                            </p>
-                        }
-                        <p>
-                            <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
-                            /
-                            <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
-                        </p>
+                    @if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
+                    <p>
+                        <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
+                    </p>
                     }
                 </div>
             </div>
@@ -274,3 +251,42 @@
         }
     })();
 </script>
+
+
+@*@if (User.Identity.IsAuthenticated) {
+    if (!string.IsNullOrWhiteSpace(shoes.Desc)) {
+        <p>
+            <b>Описание</b>: @shoes.Desc
+        </p>
+    }
+    if (shoes.Width != 1 || shoes.Height != 1) {
+        <p>
+            <b>Размер</b>: @shoes.Width * @shoes.Height
+        </p>
+    }
+    if (shoes.PlaceOfBuying.Id.ToString() != Model.DropDowns.PlaceOfBuyingList.First().Value) {
+        <p>
+            <b>Место покупки</b>: @shoes.PlaceOfBuying.CountryName
+            @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
+                                    ? string.Empty
+                                    : shoes.PlaceOfBuying.CityName)
+        </p>
+    }
+    if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
+        <p>
+            <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
+        </p>
+    }
+    <p>
+        <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
+        /
+        <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
+    </p>
+}
+
+
+@if (shoes.Material.Id.ToString() != Model.DropDowns.MaterialList.First().Value) {
+    <p>
+        <b>Материал</b>: @shoes.Material.Name
+    </p>
+}*@

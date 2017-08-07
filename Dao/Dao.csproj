@@ -110,6 +110,10 @@
     <Compile Include="Migrations\201705141831257_AddYearOnlyField.Designer.cs">
       <DependentUpon>201705141831257_AddYearOnlyField.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708071711133_RemoveSecondLocation.cs" />
+    <Compile Include="Migrations\201708071711133_RemoveSecondLocation.Designer.cs">
+      <DependentUpon>201708071711133_RemoveSecondLocation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\MigrationsConfiguration.cs" />
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\Person.cs" />
@@ -184,6 +188,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705141831257_AddYearOnlyField.resx">
       <DependentUpon>201705141831257_AddYearOnlyField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708071711133_RemoveSecondLocation.resx">
+      <DependentUpon>201708071711133_RemoveSecondLocation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

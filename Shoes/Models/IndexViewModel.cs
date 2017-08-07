@@ -9,12 +9,12 @@ namespace Shoes.Models
     {
         public IndexViewModel() { }
 
-        public IndexViewModel(List<Dao.Model.Shoes> shoes,
-                              List<Material> materials,
-                              List<Group> groups,
-                              List<Place> places,
-                              List<Person> givers) {
-            Shoes = shoes;
+        public IndexViewModel(IEnumerable<Dao.Model.Shoes> shoes,
+                              IEnumerable<Material> materials,
+                              IEnumerable<Group> groups,
+                              IEnumerable<Place> places,
+                              IEnumerable<Person> givers) {
+            Shoes = shoes.ToList();
             DropDowns = new ListOfDropDown(materials, groups, places, givers, null);
         }
         
