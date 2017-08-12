@@ -96,6 +96,7 @@
     <Content Include="Content\clothes.ico" />
     <Content Include="Content\logo.png" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\ui_img\wait.gif" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -132,6 +133,7 @@
     </Compile>
     <Compile Include="Models\IndexViewModel.cs" />
     <Compile Include="Models\ListOfDropDown.cs" />
+    <Compile Include="Models\ShoesShortViewModel.cs" />
     <Compile Include="Models\ShoesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

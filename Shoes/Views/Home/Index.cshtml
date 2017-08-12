@@ -41,8 +41,8 @@
 
 @if (Model.Shoes != null) {
     <div class="row">
-        @foreach (var shoes in Model.Shoes.Where(x => x.IsPublic || User.Identity.IsAuthenticated)) {
-            <div class="col-sm-4 shoes-block" > @*style="display: @(shoes.OldIdLvl2 < 2 ? "" : "none")"*@
+        @foreach (var shoes in Model.Shoes) {
+            <div class="col-sm-4 shoes-block">
                 <input type="hidden" class="material" value="@shoes.Material.Id" />
                 <input type="hidden" class="group" value="@shoes.Group.Id" />
                 <input type="hidden" class="giver" value="@shoes.Giver.Id" />
@@ -54,14 +54,7 @@
                          data-old-id="@(shoes.OldId + (shoes.OldIdLvl2 != 0
                             ? "." + shoes.OldIdLvl2
                             : string.Empty))" />
-                    @if (User.Identity.IsAuthenticated) {
-                        <p>
-                            <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
-                            /
-                            <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
-                        </p>
-                    }
-                    <p>
+                    <p class="shoes-name">
                         @shoes.Name
                         @if (User.Identity.IsAuthenticated) {
                             <span>
@@ -82,9 +75,16 @@
                         </p>
                     }
                     @if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
-                    <p>
-                        <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
-                    </p>
+                        <p>
+                            <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
+                        </p>
+                    }
+                    @if (User.Identity.IsAuthenticated) {
+                        <p>
+                            <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
+                            /
+                            <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
+                        </p>
                     }
                 </div>
             </div>
@@ -105,14 +105,14 @@
                     <div id="myCarousel" class="carousel slide" data-ride="carousel">
                         <!-- Indicators -->
                         <ol class="carousel-indicators">
-                            @*<li data-target="#myCarousel" data-slide-to="0" class="active"></li>*@                            
+                            @*<li data-target="#myCarousel" data-slide-to="0" class="active"></li>*@
                         </ol>
 
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner">
                             @*<div class="item active">
-                                <img src="/Content/img/30024.jpg" />
-                            </div>*@
+                                    <img src="/Content/img/30024.jpg" />
+                                </div>*@
                         </div>
 
                         <!-- Left and right controls -->
@@ -126,21 +126,50 @@
                         </a>
                     </div>
 
-                    @*<div class="row">
-                        <img id="preview-img" class="col-sm-12" />
-                    </div>*@
+
+                    <div class="shoes-details">
+                        <p class="shoes-description">
+                            <b>Описание</b>: <span></span>
+                        </p>
+                        <p class="shoes-giver">
+                            <b>Даритель</b>: <span></span>
+                        </p>
+                        <p class="shoes-place">
+                            <b>Происхождение</b>: <span></span>
+                        </p>
+                        <p class="shoes-size">
+                            <b>Размер</b>: <span class="shoes-width"></span><span class="shoes-height"></span>
+                        </p>
+                        <p class="shoes-material">
+                            <b>Материал</b>: <span></span>
+                        </p>
+                        <p class="shoes-group">
+                            <b>Группа</b>: <span></span>
+                        </p>
+                        <p class="wait">
+                            <img src="~/Content/ui_img/wait.gif" />
+                        </p>
+                    </div>
                 </div>
                 @*<div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Next</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>*@
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>*@
             </div>
         </div>
     </div>
 }
 
+@{ 
+    var idPlaceHolder = -1;
+}
 <script>
     (function () {
+        var defaultGiver = '@Model.DropDowns.GiversList.First().Text';
+        var defaultPlace = '@Model.DropDowns.PlaceOfBuyingList.First().Text';
+        var defaultGroup = '@Model.DropDowns.GroupList.First().Text';
+        var defaultMaterial = '@Model.DropDowns.MaterialList.First().Text';
+        
+        var getDetailsForShoes = '@Url.Action("GetShoesDetails", new { id = idPlaceHolder })';
         init();
 
         $(".preview-image").click(function () {
@@ -162,10 +191,15 @@
             var isActiveClass = '';
             for (var i = 0; i < images.length; i++) {
                 isActiveClass = i == 0 ? 'active' : '';
-                $(".carousel-inner").append("<div class='item " + isActiveClass + "'><img src='" + images[i].attr("src") + "' /></div>");
-                $(".carousel-indicators").append("<li class='" + isActiveClass+"' data-target='#myCarousel' data-slide-to='" + i + "'></li>");
+                var realId = images[i].data("real-id");
+                $(".carousel-inner").append("<div data-real-id='" + realId + "' class='item " + isActiveClass + "'>"
+                    + "<img src='" + images[i].attr("src") + "' /></div>");
+                $(".carousel-indicators").append("<li class='" + isActiveClass + "' data-target='#myCarousel' data-slide-to='" + i + "'></li>");
             }
-            
+
+            var firstId = images[0].data("real-id");
+            fillDetails(firstId);
+
             initCarousel();
         });
 
@@ -236,6 +270,46 @@
             initCarousel();
         }
 
+        function fillDetails(id) {
+            $(".shoes-details").clone().appendTo(".carousel-inner .item");
+            var currentShoes = $(".carousel-inner .item[data-real-id=" + id + "] .shoes-details");
+            currentShoes.show();
+            currentShoes.find(".wait").show();
+
+
+            $.get(getDetailsForShoes.replace(@idPlaceHolder, id), function (shoes) {
+                currentShoes.find(".wait").hide();
+                if (shoes.Desc) {
+                    currentShoes.find(".shoes-description").show();
+                    currentShoes.find(".shoes-description span").text(shoes.Desc);
+                }
+                if (shoes.Width != 1 || shoes.Height != 1) {
+                    currentShoes.find(".shoes-size").show();
+                    currentShoes.find(".shoes-size .shoes-width").text(shoes.Width);
+                    if (shoes.Height != 1) {
+                        currentShoes.find(".shoes-size .shoes-height").text('x' + shoes.Height);
+                    }
+                }
+                if (shoes.PlaceOfBuying && shoes.PlaceOfBuying != defaultPlace) {
+                    currentShoes.find(".shoes-place").show();
+                    currentShoes.find(".shoes-place span").text(shoes.PlaceOfBuying);
+                }
+                if (shoes.Giver && shoes.Giver != defaultGiver) {
+                    currentShoes.find(".shoes-giver").show();
+                    currentShoes.find(".shoes-giver span").text(shoes.Giver);
+                }
+
+                if (shoes.Material && shoes.Material != defaultMaterial) {
+                    currentShoes.find(".shoes-material").show();
+                    currentShoes.find(".shoes-material span").text(shoes.Material);
+                }
+                if (shoes.Group && shoes.Group != defaultGroup) {
+                    currentShoes.find(".shoes-group").show();
+                    currentShoes.find(".shoes-group span").text(shoes.Group);
+                }
+            });
+        }
+
         function clear() {
             $(".shoes-block").removeClass("col-sm-3");
             $(".shoes-block").removeClass("col-sm-4");
@@ -251,42 +325,3 @@
         }
     })();
 </script>
-
-
-@*@if (User.Identity.IsAuthenticated) {
-    if (!string.IsNullOrWhiteSpace(shoes.Desc)) {
-        <p>
-            <b>Описание</b>: @shoes.Desc
-        </p>
-    }
-    if (shoes.Width != 1 || shoes.Height != 1) {
-        <p>
-            <b>Размер</b>: @shoes.Width * @shoes.Height
-        </p>
-    }
-    if (shoes.PlaceOfBuying.Id.ToString() != Model.DropDowns.PlaceOfBuyingList.First().Value) {
-        <p>
-            <b>Место покупки</b>: @shoes.PlaceOfBuying.CountryName
-            @(string.IsNullOrEmpty(shoes.PlaceOfBuying.CityName)
-                                    ? string.Empty
-                                    : shoes.PlaceOfBuying.CityName)
-        </p>
-    }
-    if (shoes.Giver.Id.ToString() != Model.DropDowns.GiversList.First().Value) {
-        <p>
-            <b>Даритель</b>: @shoes.Giver.LastName @shoes.Giver.FirstName
-        </p>
-    }
-    <p>
-        <a href="@Url.Action("Edit", new { id = shoes.Id})">Редактировать</a>
-        /
-        <a href="@Url.Action("Remove", new { id = shoes.Id})" class="remove">Удалить</a>
-    </p>
-}
-
-
-@if (shoes.Material.Id.ToString() != Model.DropDowns.MaterialList.First().Value) {
-    <p>
-        <b>Материал</b>: @shoes.Material.Name
-    </p>
-}*@

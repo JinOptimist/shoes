@@ -63,7 +63,7 @@ namespace Shoes.Models
         public void InitGiverList(IEnumerable<Person> givers)
         {
             GiversList = givers?.Select(x => new SelectListItem() {
-                Text = x.LastName + " " + x.FirstName,
+                Text = x.ToString(),
                 Value = x.Id.ToString(),
                 Selected = GiverId == x.Id
             }).ToList();
@@ -77,7 +77,7 @@ namespace Shoes.Models
                 }).ToList();
             PlaceOfBuyingList = places?.Select(x => new SelectListItem() {
                 Group = groups.FirstOrDefault(gr => gr.Name == x.CountryName),
-                Text = x.CountryName + " " + x.CityName,
+                Text = x.ToString(),
                 Value = x.Id.ToString(),
                 Selected = PlaceOfBuyingId == x.Id
             }).ToList();

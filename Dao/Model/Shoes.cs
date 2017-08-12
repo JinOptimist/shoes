@@ -21,6 +21,7 @@ namespace Dao.Model
         public string ImageUrl { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateOfCreating { get; set; }
@@ -29,14 +30,15 @@ namespace Dao.Model
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
         public DateTime? DateOfPurchase { get; set; }
         public int? YearOfPurchase { get; set; }
+
         public int NumberOfDuplication { get; set; }
         public bool IsPublic { get; set; }
 
         public virtual Material Material { get; set; }
         public virtual Group Group { get; set; }
         public virtual Place PlaceOfBuying { get; set; }
-
         public virtual Person Giver { get; set; }
+
         public virtual List<Shoes> ConnectedShoes { get; set; }
     }
 }

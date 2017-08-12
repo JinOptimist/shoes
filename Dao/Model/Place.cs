@@ -11,5 +11,12 @@ namespace Dao.Model
     {
         public string CountryName { get; set; }
         public string CityName { get; set; }
+
+        public override string ToString()
+        {
+            return CountryName 
+                + (string.IsNullOrWhiteSpace(CityName) ? "" : " " )
+                + CityName;
+        }
     }
 }

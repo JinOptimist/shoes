@@ -19,5 +19,10 @@ namespace Dao.Repository
                                 && x.OldIdLvl2 == shoes.OldIdLvl2 
                                 && x.Id != shoes.Id);
         }
+
+        public List<Shoes> GetAll(bool isAuth)
+        {
+            return Entity.Where(x => x.IsPublic || isAuth).ToList();
+        }
     }
 }

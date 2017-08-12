@@ -85,7 +85,12 @@ textarea {
     border-bottom: 1px dotted #ccc;
 }
 
-.oldIdLvl2{
+.shoes-name {
+    font-weight: 600;
+    color: maroon;
+}
+
+.oldIdLvl2 {
     visibility: hidden;
 }
 
@@ -132,4 +137,24 @@ textarea {
 
 .modal-title {
     display: inline-block;
+}
+
+.shoes-details {
+    display: none;
+    padding-top: 7px;
+}
+
+    .shoes-details p {
+        display: none;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+.wait {
+    margin-left:10px;
+    
+}
+.wait img {
+    width: 40px;
+    height: 40px;
 }

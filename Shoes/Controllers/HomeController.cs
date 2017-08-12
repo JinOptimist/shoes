@@ -38,7 +38,7 @@ namespace Shoes.Controllers
         [AllowAnonymous]
         public ActionResult Index()
         {
-            var shoes = ShoesRepository.GetAll().Where(x => x.IsPublic || User.Identity.IsAuthenticated)
+            var shoes = ShoesRepository.GetAll(User.Identity.IsAuthenticated)
                 .OrderBy(x => x.OldIdLvl2).OrderBy(x => x.OldId).ToList();
             var materials = MaterialRepository.GetAll();
             var groups = GroupRepository.GetAll();
@@ -155,6 +155,14 @@ namespace Shoes.Controllers
             shoesViewModel.DropDowns = new ListOfDropDown(materials, groups, places, givers, shoesViewModel);
 
             return View(shoesViewModel);
+        }
+
+        [AllowAnonymous]
+        public JsonResult GetShoesDetails(long id)
+        {
+            var model = ShoesRepository.Get(id);
+            var viewModel = new ShoesShortViewModel(model);
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
         }
 
         /* ------------ Material ------------ */
