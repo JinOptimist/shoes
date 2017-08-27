@@ -185,7 +185,11 @@ namespace Shoes.Controllers
 
         public JsonResult RemoveMaterial(long id)
         {
-            MaterialRepository.Remove(id);
+            try {
+                MaterialRepository.Remove(id);
+            } catch (Exception e) {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
@@ -209,7 +213,14 @@ namespace Shoes.Controllers
 
         public JsonResult RemoveGroup(long id)
         {
-            GroupRepository.Remove(id);
+            try
+            {
+                GroupRepository.Remove(id);
+            }
+            catch (Exception e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
@@ -235,7 +246,14 @@ namespace Shoes.Controllers
 
         public JsonResult RemovePlace(long id)
         {
-            PlaceRepository.Remove(id);
+            try
+            {
+                PlaceRepository.Remove(id);
+            }
+            catch (Exception e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
             return Json(true, JsonRequestBehavior.AllowGet);
         }
         
@@ -261,7 +279,14 @@ namespace Shoes.Controllers
 
         public JsonResult RemovePerson(long id)
         {
-            PersonRepository.Remove(id);
+            try
+            {
+                PersonRepository.Remove(id);
+            }
+            catch (Exception e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 

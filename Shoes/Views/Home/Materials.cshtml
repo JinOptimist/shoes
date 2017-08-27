@@ -84,8 +84,12 @@
                 data: {
                     id: id,
                 },
-                success: function () {
-                    location.reload();
+                success: function (data) {
+                    if (data) {
+                        location.reload();
+                    } else {
+                        alert('Удалить не получилось');
+                    }
                 },
             });
         });
