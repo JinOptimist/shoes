@@ -160,8 +160,8 @@ namespace Shoes.Controllers
         [AllowAnonymous]
         public JsonResult GetShoesDetails(long id)
         {
-            var model = ShoesRepository.Get(id);
-            var viewModel = new ShoesShortViewModel(model);
+            var shoes = ShoesRepository.GetWithDublicate(id);
+            var viewModel = shoes.Select(x=> new ShoesShortViewModel(x));
             return Json(viewModel, JsonRequestBehavior.AllowGet);
         }
 

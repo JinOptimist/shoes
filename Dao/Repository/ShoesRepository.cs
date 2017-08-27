@@ -24,5 +24,14 @@ namespace Dao.Repository
         {
             return Entity.Where(x => x.IsPublic || isAuth).ToList();
         }
+
+        public List<Shoes> GetWithDublicate(long id)
+        {
+            var shoes = Entity.FirstOrDefault(x => x.Id == id);
+            if (shoes == null)
+                return null;
+
+            return Entity.Where(x => x.OldId == shoes.OldId).ToList();
+        }
     }
 }

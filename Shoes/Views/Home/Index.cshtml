@@ -3,6 +3,10 @@
     ViewBag.Title = "Коллекция";
 }
 
+@section head{
+    <script src="~/Scripts/shoes/index-filter.js"></script>
+}
+
 <div class="page-header">
     <h1>Коллекция <span id="selectedCount">@Model.Shoes.Count()/</span>@Model.Shoes.Count() шт </h1>
     <div class="row">
@@ -126,7 +130,6 @@
                         </a>
                     </div>
 
-
                     <div class="shoes-details">
                         <p class="shoes-description">
                             <b>Описание</b>: <span></span>
@@ -146,10 +149,11 @@
                         <p class="shoes-group">
                             <b>Группа</b>: <span></span>
                         </p>
-                        <p class="wait">
-                            <img src="~/Content/ui_img/wait.gif" />
-                        </p>
                     </div>
+
+                    <p class="wait">
+                        <img src="~/Content/ui_img/wait.gif" />
+                    </p>
                 </div>
                 @*<div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -169,38 +173,21 @@
         var defaultGroup = '@Model.DropDowns.GroupList.First().Text';
         var defaultMaterial = '@Model.DropDowns.MaterialList.First().Text';
         
-        var getDetailsForShoes = '@Url.Action("GetShoesDetails", new { id = idPlaceHolder })';
+        var getDetailsForShoesUrl = '@Url.Action("GetShoesDetails", new { id = idPlaceHolder })';
+
         init();
 
         $(".preview-image").click(function () {
             $("#myModal").modal();
+            $(".modal-body .wait").show();
 
             var oldIdCommon = $(this).data("old-id-common");
-            var images = $("[data-old-id-common=" + oldIdCommon + "]").map(function (index, img) {
-                return $(img);
-            });
-
-            var title = $(this).data("name");
-            if (images.length > 0) {
-                title = title + " №" + oldIdCommon;
-            }
+            var oldId = $(this).data("old-id");
+            var title = $(this).data("name") + " №" + oldIdCommon;
             $(".modal-title").text(title);
-
-            $(".carousel-inner").empty();
-            $(".carousel-indicators").empty();
-            var isActiveClass = '';
-            for (var i = 0; i < images.length; i++) {
-                isActiveClass = i == 0 ? 'active' : '';
-                var realId = images[i].data("real-id");
-                $(".carousel-inner").append("<div data-real-id='" + realId + "' class='item " + isActiveClass + "'>"
-                    + "<img src='" + images[i].attr("src") + "' /></div>");
-                $(".carousel-indicators").append("<li class='" + isActiveClass + "' data-target='#myCarousel' data-slide-to='" + i + "'></li>");
-            }
-
-            var firstId = images[0].data("real-id");
-            fillDetails(firstId);
-
-            initCarousel();
+            var realId = $(this).data("real-id");
+            
+            fillDetails(realId);
         });
 
         $(".remove").click(function () {
@@ -209,112 +196,69 @@
             }
         });
 
-        $(".dropdowns-filter").change(function () {
-            $(".dropdowns-filter").removeClass("active");
-            var typeName = $(this).data("type");
-            var type = $("." + typeName);
-            var first = $(this).find("option:first-child").val();
-            var selectedId = $(this).val();
-
-            var otherFilters = $(".dropdowns-filter:not([data-type=" + typeName + "])");
-            otherFilters.find("option").removeAttr('selected');
-            otherFilters.find("option:first").attr('selected', 'selected');
-            if (selectedId == first) {
-                type.parent().show();
-            } else {
-                $(this).addClass("active");
-                type.parent().hide();
-                $("." + typeName + "[value=" + selectedId + "]").parent().show();
-            }
-
-            var selectedCount = $(".shoes-block:visible ").length;
-            $("#selectedCount").text(selectedCount + "/");
-        });
-
-        $("#refresh").click(function () {
-            $(".dropdowns-filter").removeClass("active");
-            var filters = $(".dropdowns-filter");
-            filters.find("option").removeAttr('selected');
-            filters.find("option:first").attr('selected', 'selected');
-            $(".shoes-block").show();
-
-            var selectedCount = $(".shoes-block:visible ").length;
-            $("#selectedCount").text(selectedCount + "/");
-        });
-
-        $(".size").click(function () {
-            $(".size").removeClass("active");
-            $(this).addClass("active");
-            var type = $(this).attr("id");
-            switch (type) {
-                case "small":
-                    clear();
-                    $(".shoes-block").addClass("col-sm-3");
-                    break;
-                case "medium":
-                    clear();
-                    $(".shoes-block").addClass("col-sm-4");
-                    break;
-                case "big":
-                    clear();
-                    $(".shoes-block").addClass("col-sm-6");
-                    break;
-                case "full":
-                    clear();
-                    $(".shoes-block").addClass("col-sm-12");
-                    break;
-            }
-        });
-
         function init() {
             initCarousel();
         }
 
+        function generateCarouselElemnts(shoes) {
+            var isActiveClass = '';
+            for (var i = 0; i < shoes.length; i++) {
+                isActiveClass = i == 0 ? 'active' : '';
+                $(".carousel-inner").append("<div data-real-id='" + shoes[i].Id + "' class='item " + isActiveClass + "'>"
+                    + "<img src='" + shoes[i].ImageUrl + "' /></div>");
+                $(".carousel-indicators").append("<li class='" + isActiveClass + "' data-target='#myCarousel' data-slide-to='" + i + "'></li>");
+            }
+        }
+
         function fillDetails(id) {
-            $(".shoes-details").clone().appendTo(".carousel-inner .item");
-            var currentShoes = $(".carousel-inner .item[data-real-id=" + id + "] .shoes-details");
-            currentShoes.show();
-            currentShoes.find(".wait").show();
+            $(".carousel-inner").empty();
+            $(".carousel-indicators").empty();
 
+            $.get(getDetailsForShoesUrl.replace(@idPlaceHolder, id), function (shoes) {
+                generateCarouselElemnts(shoes);
 
-            $.get(getDetailsForShoes.replace(@idPlaceHolder, id), function (shoes) {
-                currentShoes.find(".wait").hide();
-                if (shoes.Desc) {
-                    currentShoes.find(".shoes-description").show();
-                    currentShoes.find(".shoes-description span").text(shoes.Desc);
-                }
-                if (shoes.Width != 1 || shoes.Height != 1) {
-                    currentShoes.find(".shoes-size").show();
-                    currentShoes.find(".shoes-size .shoes-width").text(shoes.Width);
-                    if (shoes.Height != 1) {
-                        currentShoes.find(".shoes-size .shoes-height").text('x' + shoes.Height);
-                    }
-                }
-                if (shoes.PlaceOfBuying && shoes.PlaceOfBuying != defaultPlace) {
-                    currentShoes.find(".shoes-place").show();
-                    currentShoes.find(".shoes-place span").text(shoes.PlaceOfBuying);
-                }
-                if (shoes.Giver && shoes.Giver != defaultGiver) {
-                    currentShoes.find(".shoes-giver").show();
-                    currentShoes.find(".shoes-giver span").text(shoes.Giver);
+                $(".modal-body .wait").hide();
+                
+                for (var i = 0; i < shoes.length; i++) {
+                    fillDescForShoe(shoes[i]);
                 }
 
-                if (shoes.Material && shoes.Material != defaultMaterial) {
-                    currentShoes.find(".shoes-material").show();
-                    currentShoes.find(".shoes-material span").text(shoes.Material);
-                }
-                if (shoes.Group && shoes.Group != defaultGroup) {
-                    currentShoes.find(".shoes-group").show();
-                    currentShoes.find(".shoes-group span").text(shoes.Group);
-                }
             });
         }
 
-        function clear() {
-            $(".shoes-block").removeClass("col-sm-3");
-            $(".shoes-block").removeClass("col-sm-4");
-            $(".shoes-block").removeClass("col-sm-6");
-            $(".shoes-block").removeClass("col-sm-12");
+        function fillDescForShoe(shoe) {
+            $(".modal-body > .shoes-details").clone().appendTo(".carousel-inner .item[data-real-id=" + shoe.Id + "]");
+            var currentShoes = $(".carousel-inner .item[data-real-id=" + shoe.Id + "] .shoes-details");
+
+            currentShoes.show();
+            if (shoe.Desc) {
+                currentShoes.find(".shoes-description").show();
+                currentShoes.find(".shoes-description span").text(shoe.Desc);
+            }
+            if (shoe.Width != 1 || shoe.Height != 1) {
+                currentShoes.find(".shoes-size").show();
+                currentShoes.find(".shoes-size .shoes-width").text(shoe.Width);
+                if (shoe.Height != 1) {
+                    currentShoes.find(".shoes-size .shoes-height").text('x' + shoe.Height);
+                }
+            }
+            if (shoe.PlaceOfBuying && shoe.PlaceOfBuying != defaultPlace) {
+                currentShoes.find(".shoes-place").show();
+                currentShoes.find(".shoes-place span").text(shoe.PlaceOfBuying);
+            }
+            if (shoe.Giver && shoe.Giver != defaultGiver) {
+                currentShoes.find(".shoes-giver").show();
+                currentShoes.find(".shoes-giver span").text(shoe.Giver);
+            }
+
+            if (shoe.Material && shoe.Material != defaultMaterial) {
+                currentShoes.find(".shoes-material").show();
+                currentShoes.find(".shoes-material span").text(shoe.Material);
+            }
+            if (shoe.Group && shoe.Group != defaultGroup) {
+                currentShoes.find(".shoes-group").show();
+                currentShoes.find(".shoes-group span").text(shoe.Group);
+            }
         }
 
         function initCarousel() {
@@ -325,3 +269,4 @@
         }
     })();
 </script>
+
